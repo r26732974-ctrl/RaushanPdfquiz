@@ -35,7 +35,7 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-lg text-white">PDF Quizzer AI</h1>
-                    <p class="text-xs text-slate-400">PDF to Interactive Quiz & Analysis</p>
+                    <p class="text-xs text-slate-400">High-Accuracy PDF to Interactive Quiz</p>
                 </div>
             </div>
             <div id="quizTimerNav" class="hidden flex items-center gap-2 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg text-sm font-semibold text-indigo-400">
@@ -50,8 +50,8 @@
         <!-- 1. SETUP / UPLOAD VIEW -->
         <div id="setupView" class="space-y-6">
             <div class="text-center max-w-xl mx-auto space-y-2">
-                <h2 class="text-3xl font-extrabold text-white">Apni PDF Upload Karein</h2>
-                <p class="text-slate-400 text-sm">PDF select karein ya text paste karke turant quiz shuru karein.</p>
+                <h2 class="text-3xl font-extrabold text-white">Smart PDF Quiz Converter</h2>
+                <p class="text-slate-400 text-sm">Apni PDF upload karein (Hindi/English dono supported, last me answer key bhi detect hogi).</p>
             </div>
 
             <!-- Upload Box -->
@@ -67,12 +67,7 @@
                 <!-- Manual Text Input -->
                 <div>
                     <label class="block text-xs text-slate-400 font-semibold uppercase tracking-wider mb-2">2. Text / Questions Paste Karein:</label>
-                    <textarea id="manualTextInput" placeholder="Jaise: 
-1. Bharat ki rajdhani kahan hai?
-A) Mumbai
-B) Delhi
-C) Kolkata
-D) Chennai" class="w-full h-36 bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 resize-none"></textarea>
+                    <textarea id="manualTextInput" placeholder="Yahan questions aur last me answer key paste karein..." class="w-full h-36 bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 resize-none"></textarea>
                 </div>
 
                 <button onclick="processInput()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-6 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 cursor-pointer">
@@ -209,51 +204,88 @@ D) Chennai" class="w-full h-36 bg-slate-900 border border-slate-700 rounded-xl p
                 return;
             }
 
-            quizData = parseQuizText(text);
+            quizData = parseHighAccuracyQuiz(text);
 
             if (quizData.length === 0) {
-                alert('Sahi format me questions nahi mile. Kripya option A, B, C, D ke sath format likhein!');
+                alert('Questions detect nahi ho sake! Kripya check karein ki questions me 1., 2. ya Q1 format hai.');
                 return;
             }
 
             startQuiz();
         }
 
-        function parseQuizText(text) {
+        function parseHighAccuracyQuiz(text) {
+            // Step 1: Separate Answer Key if present at the end
+            let answerMap = {};
+            let mainText = text;
+
+            const keyKeywords = /(answer key|answers|uttar|solution)/i;
+            const keyIndex = text.search(keyKeywords);
+            if (keyIndex !== -1) {
+                const keySection = text.slice(keyIndex);
+                mainText = text.slice(0, keyIndex);
+
+                // Extract answers like "1. A", "1-B", "Q1: C", "(1) A"
+                const ansMatches = keySection.matchAll(/(?:q|प्रश्न)?\s*(\d+)[\.\:\-\)]+\s*([a-dA-D])/gi);
+                for (const match of ansMatches) {
+                    const qNum = parseInt(match[1]) - 1;
+                    const ansChar = match[2].toUpperCase();
+                    const ansIdx = ansChar.charCodeAt(0) - 65; // A->0, B->1, C->2, D->3
+                    answerMap[qNum] = ansIdx;
+                }
+            }
+
+            // Step 2: Split questions using robust regex for "1.", "2.", "Q1", "Q.1"
+            const rawBlocks = mainText.split(/(?=\b(?:q\.?\s*\d+|\d+[\.\)]\s))/gi);
             const questions = [];
-            const blocks = text.split(/\n\s*\n/);
 
-            blocks.forEach(block => {
-                const lines = block.split('\n').map(l => l.trim()).filter(Boolean);
-                if (lines.length < 2) return;
+            rawBlocks.forEach((block, idx) => {
+                const cleanedBlock = block.trim();
+                if (cleanedBlock.length < 10) return;
 
-                const qText = lines[0].replace(/^\d+[\.\)]\s*/, '');
+                // Extract options matching a., b., c., d. or A), B), C), D) or (a), (b)
                 const options = [];
+                const optionRegex = /\b(?:[a-dA-D]|\([a-dA-D]\))[\.\)]\s*([^\n]+)/g;
+                let match;
+                
+                let lastOptEndIndex = cleanedBlock.length;
+                let firstOptStartIndex = -1;
 
-                for(let i = 1; i < lines.length; i++) {
-                    const optMatch = lines[i].match(/^([A-Da-d])[\.\)]\s*(.*)/);
-                    if (optMatch) {
-                        options.push(optMatch[2]);
-                    }
+                while ((match = optionRegex.exec(cleanedBlock)) !== null) {
+                    if (firstOptStartIndex === -1) firstOptStartIndex = match.index;
+                    options.push(match[1].trim());
                 }
 
-                if (options.length >= 2) {
+                // Extract Question Text
+                let qText = "";
+                if (firstOptStartIndex !== -1) {
+                    qText = cleanedBlock.slice(0, firstOptStartIndex);
+                } else {
+                    qText = cleanedBlock;
+                }
+
+                // Clean question prefixes like "1.", "Q1."
+                qText = qText.replace(/^(?:q\.?\s*\d+|\d+[\.\)]\s*)/i, '').trim();
+
+                // Keep only first 4 valid options
+                const validOptions = options.slice(0, 4);
+
+                if (qText.length > 3 && validOptions.length >= 2) {
+                    // Fallback options if less than 4
+                    while (validOptions.length < 4) {
+                        validOptions.push(`Option ${String.fromCharCode(65 + validOptions.length)}`);
+                    }
+
+                    // Assign correct answer from map or default to 0
+                    const correctAns = answerMap[questions.length] !== undefined ? answerMap[questions.length] : 0;
+
                     questions.push({
                         question: qText,
-                        options: options,
-                        answer: 0
+                        options: validOptions,
+                        answer: correctAns
                     });
                 }
             });
-
-            if (questions.length === 0) {
-                // Fallback splitting by lines if double enter not found
-                questions.push({
-                    question: text.slice(0, 120) + '...',
-                    options: ["Option A", "Option B", "Option C", "Option D"],
-                    answer: 0
-                });
-            }
 
             return questions;
         }
