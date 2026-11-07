@@ -1,70 +1,60 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QuizMaster</title>
-
+<title>QuizMaster - Smart PDF Quiz</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;font-family:Arial,sans-serif;
- background:#f3f6fb;color:#172033
-}
-header{
- background:#174b36;color:white;
- padding:20px;text-align:center
-}
-header h1{margin:0;font-size:27px}
-header p{margin:7px 0 0}
-.container{max-width:950px;margin:20px auto;padding:12px}
-.card{
- background:white;padding:20px;margin-bottom:16px;
- border-radius:13px;box-shadow:0 3px 12px #0000000c
-}
-button{
- border:0;border-radius:8px;padding:12px 17px;
- background:#176b48;color:white;font-weight:bold;
- cursor:pointer;margin:4px
-}
+body{margin:0;background:#f2f5fa;color:#172033;font-family:Arial,sans-serif}
+header{background:#00583d;color:white;text-align:center;padding:23px 10px}
+header h1{margin:0;font-size:30px}
+header p{margin:8px 0 0}
+.container{max-width:950px;margin:22px auto;padding:12px}
+.card{background:white;border-radius:14px;padding:20px;margin-bottom:17px;box-shadow:0 3px 15px #0000000b}
+h2,h3{margin-top:0}
+button{background:#08734c;color:white;border:0;padding:12px 17px;border-radius:8px;font-weight:bold;cursor:pointer;margin:4px}
 button.secondary{background:#64748b}
+button.orange{background:#b7791f}
+button.red{background:#c0392b}
 button:disabled{opacity:.4}
-input,select{
- padding:12px;border:1px solid #ccd4dc;
- border-radius:8px;margin:6px 0;max-width:100%
-}
+input,select,textarea{max-width:100%;padding:12px;border:1px solid #ccd5df;border-radius:8px;margin:5px 0;font-size:15px}
+input[type=file]{width:100%}
+textarea{width:100%;min-height:100px}
+label{display:block;margin-top:12px}
 .full{width:100%}
-.question{font-size:19px;font-weight:bold;line-height:1.5}
-.option{
- display:block;padding:13px;margin:10px 0;
- border:1px solid #d7dee6;border-radius:9px;
- cursor:pointer
-}
+.hidden{display:none!important}
+.muted{color:#64748b;font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:#eaf5ee;border-radius:10px;padding:14px;text-align:center}
+.stat b{font-size:22px;display:block;margin-top:5px}
+.option{border:1px solid #d5dce5;border-radius:9px;padding:13px;margin:10px 0;cursor:pointer}
 .option.selected{background:#e1f5e9;border-color:#16834e}
 .option.correct{background:#d9f8e5;border-color:green}
 .option.wrong{background:#ffe5e5;border-color:red}
 .navgrid{display:grid;grid-template-columns:repeat(8,1fr);gap:7px}
-.navgrid button{margin:0;padding:9px;background:#e2e8f0;color:#172033}
-.navgrid button.current{background:#176b48;color:white}
-.navgrid button.answered{background:#b9e5c9}
+.navgrid button{margin:0;background:#e2e8f0;color:#172033;padding:10px}
+.navgrid button.current{background:#08734c;color:white}
+.navgrid button.answered{background:#a9e3bd}
 .navgrid button.bookmarked{border:2px solid orange}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.stat{background:#edf5ef;padding:15px;text-align:center;border-radius:9px}
-.hidden{display:none}
-.muted{color:#64748b;font-size:13px}
-#timer{font-size:20px;font-weight:bold;color:#b45309}
+.review-item{border:1px solid #dce3eb;border-radius:10px;padding:15px;margin:14px 0}
+.review-item input{width:100%}
+.review-item .option-input{display:grid;grid-template-columns:35px 1fr;align-items:center}
+.question{font-size:19px;font-weight:bold;line-height:1.5}
+#timer{font-size:22px;font-weight:bold;color:#b7791f}
 @media(max-width:550px){
- .stats{grid-template-columns:1fr 1fr}
+ .container{padding:8px}
+ .card{padding:15px}
  .navgrid{grid-template-columns:repeat(5,1fr)}
- .card{padding:14px}
+ .stats{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 </head>
 
 <body>
-
 <header>
 <h1>📚 QuizMaster</h1>
 <p>Your PDF, Your Quiz, Your Success.</p>
@@ -72,64 +62,79 @@ input,select{
 
 <div class="container">
 
+<!-- UPLOAD -->
 <section id="uploadSection" class="card">
-<h2>Upload Your Question PDF</h2>
-<p class="muted">Upload a PDF containing questions, options and answers.</p>
-<input type="file" id="pdfFile" accept=".pdf" class="full">
+<h2>Upload Question PDF</h2>
+<p class="muted">Upload your original question paper.</p>
+<input type="file" id="pdfFile" accept=".pdf">
 
 <h3>Test Settings</h3>
-<label>Number of Questions</label><br>
-<select id="questionCount">
+<label>Number of Questions</label>
+<select id="questionCount" class="full">
 <option value="50">50 Questions</option>
 <option value="25">25 Questions</option>
 <option value="10">10 Questions</option>
-<option value="all">All Available Questions</option>
-</select><br>
+<option value="all">All Questions</option>
+</select>
 
-<label>Difficulty</label><br>
-<select id="difficulty">
+<label>Difficulty</label>
+<select id="difficulty" class="full">
 <option>Medium</option>
 <option>Easy</option>
 <option>Hard</option>
-</select><br>
+</select>
 
-<label>Language</label><br>
-<select id="language">
+<label>Language</label>
+<select id="language" class="full">
 <option>Hindi + English</option>
 <option>Hindi</option>
 <option>English</option>
-</select><br>
+</select>
+
+<label>Test Duration</label>
+<select id="duration" class="full">
+<option value="60">60 Minutes</option>
+<option value="30">30 Minutes</option>
+<option value="90">90 Minutes</option>
+<option value="120">120 Minutes</option>
+</select>
 
 <button id="loadBtn" class="full">Extract PDF Questions</button>
 <p id="uploadStatus" class="muted"></p>
 </section>
 
-<section id="checkSection" class="card hidden">
+<!-- PDF REVIEW -->
+<section id="reviewSection" class="card hidden">
 <h2>PDF Accuracy Checker</h2>
-<div id="checkReport"></div>
-<button onclick="startTest()">Start Test</button>
+<div id="report"></div>
+
+<h3>Extracted Questions</h3>
+<p class="muted">Check every question and fill any missing options. Enter the correct answer only when verified from a reliable answer key.</p>
+
+<div id="reviewList"></div>
+
+<button onclick="startTest()" class="full">Confirm & Start Test</button>
+<button class="secondary full" onclick="backToUpload()">Back to Upload</button>
 </section>
 
+<!-- QUIZ -->
 <section id="quizSection" class="hidden">
-
 <div class="card">
 <div class="stats">
-<div class="stat">Total<br><b id="totalCount">0</b></div>
-<div class="stat">Attempted<br><b id="attemptedCount">0</b></div>
-<div class="stat">Remaining<br><b id="remainingCount">0</b></div>
+<div class="stat">Total<b id="totalCount">0</b></div>
+<div class="stat">Attempted<b id="attemptedCount">0</b></div>
+<div class="stat">Remaining<b id="remainingCount">0</b></div>
 </div>
 <p id="timer">60:00</p>
 </div>
 
 <div class="card">
-<div style="display:flex;justify-content:space-between;gap:10px">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
 <b id="questionNumber"></b>
-<button class="secondary" id="bookmarkBtn">☆ Bookmark</button>
+<button id="bookmarkBtn" class="orange">☆ Bookmark</button>
 </div>
-
-<p class="question" id="questionText"></p>
+<p id="questionText" class="question"></p>
 <div id="options"></div>
-<div id="solution" class="hidden"></div>
 
 <div style="margin-top:18px">
 <button class="secondary" onclick="previousQuestion()">Previous</button>
@@ -145,29 +150,30 @@ input,select{
 </div>
 
 <div class="card">
-<button class="full" style="background:#b45309" onclick="finishTest()">Submit Test</button>
+<button class="red full" onclick="finishTest()">Submit Test</button>
 </div>
-
 </section>
 
+<!-- RESULT -->
 <section id="resultSection" class="hidden">
 <div class="card">
 <h2>🏆 Test Result</h2>
 <div class="stats">
-<div class="stat">Score<br><b id="score"></b></div>
-<div class="stat">Correct<br><b id="correct"></b></div>
-<div class="stat">Wrong<br><b id="wrong"></b></div>
+<div class="stat">Score<b id="score">0</b></div>
+<div class="stat">Correct<b id="correct">0</b></div>
+<div class="stat">Wrong<b id="wrong">0</b></div>
 </div>
-<h3>Performance Analysis</h3>
 <div id="analysis"></div>
 <button onclick="showHistory()">Test History</button>
 <button onclick="location.reload()">New Test</button>
 </div>
 </section>
 
+<!-- HISTORY -->
 <section id="historySection" class="card hidden">
 <h2>Test History</h2>
 <div id="history"></div>
+<button onclick="clearHistory()" class="red">Clear History</button>
 </section>
 
 </div>
@@ -181,277 +187,507 @@ let answers={};
 let bookmarks=new Set();
 let current=0;
 let seconds=3600;
-let timerInterval;
+let timerInterval=null;
 let submitted=false;
 
 const $=id=>document.getElementById(id);
 
 function show(id){
-['uploadSection','checkSection','quizSection','resultSection']
+['uploadSection','reviewSection','quizSection','resultSection']
 .forEach(x=>$(x).classList.add('hidden'));
 $(id).classList.remove('hidden');
 }
 
-function parseQuestions(text){
- const normalized=text.replace(/\r/g,'\n');
- const blocks=normalized.split(/-{3,}/);
- let result=[];
-
- blocks.forEach(block=>{
-  const qMatch=block.match(/Question\s*(\d+)\s*[:.)-]?\s*/i);
-  if(!qMatch)return;
-
-  let qText=block.slice(qMatch.index+qMatch[0].length);
-  const optionMatches=[...qText.matchAll(/(?:^|\n)\s*([A-D])\s*[.)]\s*/gim)];
-
-  if(optionMatches.length<2)return;
-
-  const question=qText.slice(0,optionMatches[0].index).trim();
-  const options={};
-
-  optionMatches.forEach((m,i)=>{
-   const start=m.index+m[0].length;
-   const end=i+1<optionMatches.length?optionMatches[i+1].index:qText.length;
-   options[m[1].toUpperCase()]=qText.slice(start,end).trim();
-  });
-
-  const answerMatch=block.match(/Answer\s*:\s*([A-D])/i);
-  const solutionMatch=block.match(/Solution\s*:\s*([\s\S]*)/i);
-
-  if(!question || !answerMatch)return;
-
-  Object.keys(options).forEach(k=>{
-   options[k]=options[k].replace(/Answer\s*:[\s\S]*/i,'').trim();
-  });
-
-  result.push({
-   number:qMatch[1],
-   question,
-   options,
-   answer:answerMatch[1].toUpperCase(),
-   solution:solutionMatch?solutionMatch[1].trim():'',
-  });
- });
- return result;
+function backToUpload(){
+show('uploadSection');
 }
 
+// PDF TEXT EXTRACTION WITH LAYOUT
+async function extractPDF(pdf){
+let pages=[];
+
+for(let p=1;p<=pdf.numPages;p++){
+const page=await pdf.getPage(p);
+const content=await page.getTextContent();
+let rows=[];
+
+content.items.forEach(item=>{
+if(!item.str || !item.str.trim())return;
+
+const y=Math.round(item.transform[5]);
+let row=rows.find(r=>Math.abs(r.y-y)<=3);
+
+if(!row){
+row={y,items:[]};
+rows.push(row);
+}
+
+row.items.push({
+x:item.transform[4],
+text:item.str
+});
+});
+
+rows.sort((a,b)=>b.y-a.y);
+
+pages.push(rows.map(row=>
+row.items.sort((a,b)=>a.x-b.x)
+.map(x=>x.text).join(' ')
+).join('\n'));
+}
+return pages.join('\n\n');
+}
+
+// QUESTION PARSER
+function parseQuestions(text){
+const lines=text.split(/\n/)
+.map(x=>x.trim())
+.filter(Boolean);
+
+let result=[];
+let current=null;
+
+function save(){
+if(current && current.question.trim()){
+const keys=Object.keys(current.options);
+if(keys.length>=2 || current.question.length>15){
+current.needsReview=
+keys.length<4 || !current.answer;
+result.push(current);
+}
+}
+}
+
+function newQuestion(number,question){
+save();
+current={
+number:String(number),
+question:question||'',
+options:{A:'',B:'',C:'',D:''},
+answer:'',
+solution:'',
+needsReview:true
+};
+}
+
+for(let line of lines){
+
+// Ignore headers and footer
+if(/PHYSICS DPP|Target-|Course-|Malviya Academy/i.test(line))continue;
+if(/^Answers\s*\(/i.test(line))continue;
+
+// Numbered question
+let q=line.match(/^(\d{1,2})[.)]\s+(.+)$/);
+
+if(q){
+newQuestion(q[1],q[2]);
+continue;
+}
+
+if(!current){
+// Recover some unnumbered questions from this PDF
+if(/^(Consider the charge configuration|A charge q is placed|charge qz of mass)/i.test(line)){
+newQuestion(result.length+1,line);
+}
+continue;
+}
+
+// Answer key
+let ans=line.match(/^(?:Correct\s*)?Answer\s*[:.)-]\s*([A-D])/i);
+if(ans){
+current.answer=ans[1].toUpperCase();
+continue;
+}
+
+// Solution
+if(/^Solution\s*:/i.test(line)){
+current.solution=line.replace(/^Solution\s*:/i,'').trim();
+continue;
+}
+
+// Standard option labels
+let markers=[...line.matchAll(/(?:^|\s)(?:\(([A-Da-d])\)|([A-Da-d])[.)])\s*/g)];
+
+if(markers.length){
+markers.forEach((m,i)=>{
+const key=(m[1]||m[2]).toUpperCase();
+const start=m.index+m[0].length;
+const end=i+1<markers.length?markers[i+1].index:line.length;
+const value=line.slice(start,end).trim();
+current.options[key]+=(current.options[key]?' ':'')+value;
+});
+continue;
+}
+
+// Continuation
+current.question+=' '+line;
+}
+
+save();
+return result;
+}
+
+// UPLOAD BUTTON
 $('loadBtn').onclick=async()=>{
- const file=$('pdfFile').files[0];
- if(!file){alert('Please select a PDF first.');return;}
+const file=$('pdfFile').files[0];
 
- $('uploadStatus').textContent='Reading PDF...';
- try{
-  const buffer=await file.arrayBuffer();
-  const pdf=await pdfjsLib.getDocument({data:buffer}).promise;
-  let text='';
+if(!file){
+alert('Please select a PDF.');
+return;
+}
 
-  for(let i=1;i<=pdf.numPages;i++){
-   const page=await pdf.getPage(i);
-   const content=await page.getTextContent();
-   text+=content.items.map(x=>x.str).join(' ')+'\n';
-  }
+$('uploadStatus').textContent='Reading PDF...';
 
-  questions=parseQuestions(text);
-  answers={};bookmarks.clear();
+try{
+const buffer=await file.arrayBuffer();
+const pdf=await pdfjsLib.getDocument({data:buffer}).promise;
 
-  if(!questions.length){
-   $('uploadStatus').textContent=
-   'No questions found. Check PDF text format. Scanned PDFs need OCR.';
-   return;
-  }
+const text=await extractPDF(pdf);
+questions=parseQuestions(text);
 
-  const invalid=questions.filter(q=>
-   !q.options[q.answer] || Object.keys(q.options).length<2
-  );
+if(!questions.length){
+$('uploadStatus').textContent=
+'No questions detected. This PDF may need OCR or manual processing.';
+return;
+}
 
-  $('checkReport').innerHTML=`
-   <p>PDF pages: ${pdf.numPages}</p>
-   <p>Questions extracted: ${questions.length}</p>
-   <p>Questions with missing answers/options: ${invalid.length}</p>
-   <p>Questions ready: ${questions.length-invalid.length}</p>
-   <p class="muted">Please verify the extracted text against your original PDF.</p>
-  `;
+answers={};
+bookmarks.clear();
 
-  $('uploadStatus').textContent='Extraction completed!';
-  show('checkSection');
+const incomplete=questions.filter(q=>
+!Object.values(q.options).some(x=>x.trim())
+).length;
 
- }catch(e){
-  $('uploadStatus').textContent='PDF reading error: '+e.message;
- }
+$('report').innerHTML=`
+<p>PDF Pages: <b>${pdf.numPages}</b></p>
+<p>Questions detected: <b>${questions.length}</b></p>
+<p>Questions needing option verification: <b>${incomplete}</b></p>
+<p>Answer keys found: <b>${questions.filter(q=>q.answer).length}</b></p>
+<p class="muted">Images, formulas and unusual symbol fonts may require manual correction.</p>
+`;
+
+renderReview();
+$('uploadStatus').textContent='Extraction completed.';
+show('reviewSection');
+
+}catch(e){
+$('uploadStatus').textContent='PDF Error: '+e.message;
+}
 };
 
-function startTest(){
- const count=$('questionCount').value;
- if(count!=='all')questions=questions.slice(0,Number(count));
- if(!questions.length){alert('No questions available');return;}
+// QUESTION REVIEW AND EDITOR
+function renderReview(){
+$('reviewList').innerHTML='';
 
- current=0;answers={};bookmarks.clear();
- seconds=3600;submitted=false;
- $('totalCount').textContent=questions.length;
- show('quizSection');
- renderQuestion();
- renderNavigation();
- updateStats();
+questions.forEach((q,i)=>{
+const div=document.createElement('div');
+div.className='review-item';
 
- clearInterval(timerInterval);
- timerInterval=setInterval(()=>{
-  seconds--;
-  $('timer').textContent=
-   Math.floor(seconds/60)+':'+String(seconds%60).padStart(2,'0');
-  if(seconds<=0)finishTest();
- },1000);
+const title=document.createElement('h3');
+title.textContent='Question '+(i+1);
+div.appendChild(title);
+
+const question=document.createElement('textarea');
+question.value=q.question;
+question.placeholder='Enter question';
+question.oninput=()=>q.question=question.value;
+div.appendChild(question);
+
+['A','B','C','D'].forEach(k=>{
+const row=document.createElement('div');
+row.className='option-input';
+
+const label=document.createElement('b');
+label.textContent=k+'.';
+
+const input=document.createElement('input');
+input.value=q.options[k]||'';
+input.placeholder='Enter option '+k;
+input.oninput=()=>q.options[k]=input.value;
+
+row.append(label,input);
+div.appendChild(row);
+});
+
+const answerLabel=document.createElement('label');
+answerLabel.textContent='Verified correct answer';
+div.appendChild(answerLabel);
+
+const select=document.createElement('select');
+select.innerHTML='<option value="">Not provided / Unknown</option>'+
+['A','B','C','D'].map(k=>
+`<option value="${k}">${k}</option>`
+).join('');
+select.value=q.answer||'';
+select.onchange=()=>q.answer=select.value;
+div.appendChild(select);
+
+const solution=document.createElement('textarea');
+solution.value=q.solution||'';
+solution.placeholder='Solution (optional)';
+solution.oninput=()=>q.solution=solution.value;
+div.appendChild(solution);
+
+$('reviewList').appendChild(div);
+});
 }
 
+// START QUIZ
+function startTest(){
+const count=$('questionCount').value;
+
+let ready=questions.filter(q=>
+q.question.trim() &&
+Object.values(q.options).filter(x=>x.trim()).length>=2
+);
+
+if(count!=='all')ready=ready.slice(0,Number(count));
+
+if(!ready.length){
+alert('Please complete at least one question and two options.');
+return;
+}
+
+questions=ready;
+answers={};
+bookmarks.clear();
+current=0;
+submitted=false;
+
+seconds=Number($('duration').value)*60;
+$('totalCount').textContent=questions.length;
+
+show('quizSection');
+renderQuestion();
+renderNavigation();
+updateStats();
+startTimer();
+}
+
+function startTimer(){
+clearInterval(timerInterval);
+updateTimer();
+
+timerInterval=setInterval(()=>{
+seconds--;
+updateTimer();
+
+if(seconds<=0){
+clearInterval(timerInterval);
+finishTest(true);
+}
+},1000);
+}
+
+function updateTimer(){
+$('timer').textContent=
+Math.floor(seconds/60)+':'+String(seconds%60).padStart(2,'0');
+}
+
+// DISPLAY QUESTION
 function renderQuestion(){
- const q=questions[current];
- $('questionNumber').textContent=
- 'Question '+(current+1)+' / '+questions.length;
- $('questionText').textContent=q.question;
- $('solution').classList.add('hidden');
+const q=questions[current];
 
- $('bookmarkBtn').textContent=
- bookmarks.has(current)?'★ Bookmarked':'☆ Bookmark';
+$('questionNumber').textContent=
+'Question '+(current+1)+' / '+questions.length;
 
- $('options').innerHTML='';
+$('questionText').textContent=q.question;
 
- Object.entries(q.options).forEach(([key,value])=>{
-  const div=document.createElement('div');
-  div.className='option';
-  div.textContent=key+'. '+value;
+$('bookmarkBtn').textContent=
+bookmarks.has(current)?'★ Bookmarked':'☆ Bookmark';
 
-  if(answers[current]===key)div.classList.add('selected');
+$('options').innerHTML='';
 
-  div.onclick=()=>{
-   answers[current]=key;
-   renderQuestion();
-   renderNavigation();
-   updateStats();
-  };
+Object.entries(q.options).forEach(([key,value])=>{
+if(!value.trim())return;
 
-  $('options').appendChild(div);
- });
- updateStats();
+const div=document.createElement('div');
+div.className='option';
+div.textContent=key+'. '+value;
+
+if(answers[current]===key)div.classList.add('selected');
+
+div.onclick=()=>{
+answers[current]=key;
+renderQuestion();
+renderNavigation();
+updateStats();
+};
+
+$('options').appendChild(div);
+});
+
+updateStats();
 }
 
 function updateStats(){
- const done=Object.keys(answers).length;
- $('attemptedCount').textContent=done;
- $('remainingCount').textContent=questions.length-done;
+const done=Object.keys(answers).length;
+$('attemptedCount').textContent=done;
+$('remainingCount').textContent=questions.length-done;
 }
 
 function renderNavigation(){
- $('navigation').innerHTML='';
- questions.forEach((q,i)=>{
-  const btn=document.createElement('button');
-  btn.textContent=i+1;
-  if(i===current)btn.classList.add('current');
-  if(answers[i])btn.classList.add('answered');
-  if(bookmarks.has(i))btn.classList.add('bookmarked');
-  btn.onclick=()=>{current=i;renderQuestion();renderNavigation()};
-  $('navigation').appendChild(btn);
- });
+$('navigation').innerHTML='';
+
+questions.forEach((q,i)=>{
+const btn=document.createElement('button');
+btn.textContent=i+1;
+
+if(i===current)btn.classList.add('current');
+if(answers[i])btn.classList.add('answered');
+if(bookmarks.has(i))btn.classList.add('bookmarked');
+
+btn.onclick=()=>{
+current=i;
+renderQuestion();
+renderNavigation();
+};
+
+$('navigation').appendChild(btn);
+});
 }
 
 function previousQuestion(){
- if(current>0){current--;renderQuestion();renderNavigation();}
+if(current>0){
+current--;
+renderQuestion();
+renderNavigation();
+}
 }
 
 function skipQuestion(){
- if(current<questions.length-1){
- current++;renderQuestion();renderNavigation();
- }
+if(current<questions.length-1){
+current++;
+renderQuestion();
+renderNavigation();
+}
 }
 
 function saveNext(){
- if(current<questions.length-1){
- current++;renderQuestion();renderNavigation();
- }else{
- alert('Last question reached. Submit when ready.');
- }
+if(current<questions.length-1){
+current++;
+renderQuestion();
+renderNavigation();
+}else{
+alert('Last question reached. Submit your test.');
+}
 }
 
 $('bookmarkBtn').onclick=()=>{
- if(bookmarks.has(current))bookmarks.delete(current);
- else bookmarks.add(current);
- renderQuestion();renderNavigation();
+if(bookmarks.has(current))bookmarks.delete(current);
+else bookmarks.add(current);
+
+renderQuestion();
+renderNavigation();
 };
 
-function finishTest(){
- if(submitted)return;
- if(!confirm('Are you sure you want to submit the test?'))return;
+// SUBMIT AND ANALYSIS
+function finishTest(auto=false){
+if(submitted)return;
 
- submitted=true;
- clearInterval(timerInterval);
+if(!auto && !confirm('Submit your test?'))return;
 
- let correct=0,wrong=0,unattempted=0;
+submitted=true;
+clearInterval(timerInterval);
 
- questions.forEach((q,i)=>{
-  if(!answers[i])unattempted++;
-  else if(answers[i]===q.answer)correct++;
-  else wrong++;
- });
+let correct=0,wrong=0,unattempted=0,ungraded=0;
 
- const score=correct;
- const percentage=(correct/questions.length*100).toFixed(1);
+questions.forEach((q,i)=>{
+if(!answers[i]){
+unattempted++;
+}else if(!q.answer){
+ungraded++;
+}else if(answers[i]===q.answer){
+correct++;
+}else{
+wrong++;
+}
+});
 
- $('score').textContent=score+'/'+questions.length;
- $('correct').textContent=correct;
- $('wrong').textContent=wrong;
+const graded=questions.filter(q=>q.answer).length;
+const percentage=graded?
+(correct/graded*100).toFixed(1):'Not available';
 
- $('analysis').innerHTML=`
- <p>Accuracy: ${percentage}%</p>
- <p>Wrong answers: ${wrong}</p>
- <p>Unattempted: ${unattempted}</p>
- <p>Bookmarked: ${bookmarks.size}</p>
- <p>${percentage>=80?'Excellent performance!':
- percentage>=50?'Good effort. Keep practising!':
- 'Revise the concepts and try again.'}</p>
- <h3>Answer Review</h3>
- `;
+$('score').textContent=correct+'/'+graded;
+$('correct').textContent=correct;
+$('wrong').textContent=wrong;
 
- questions.forEach((q,i)=>{
-  const div=document.createElement('div');
-  div.className='card';
-  div.innerHTML=`
-   <b>Q${i+1}. ${escapeHTML(q.question)}</b>
-   <p>Your answer: ${answers[i]||'Not attempted'}</p>
-   <p>Correct answer: ${q.answer}</p>
-   <p>${escapeHTML(q.solution||'No solution provided')}</p>
-  `;
-  $('analysis').appendChild(div);
- });
+$('analysis').innerHTML=`
+<h3>Performance Analysis</h3>
+<p>Accuracy among attempted graded questions: ${percentage}%</p>
+<p>Wrong answers: ${wrong}</p>
+<p>Unattempted: ${unattempted}</p>
+<p>Questions without verified answer keys: ${questions.length-graded}</p>
+<p>Bookmarked: ${bookmarks.size}</p>
+<h3>Answer Review</h3>
+`;
 
- const history=JSON.parse(localStorage.getItem('qmHistory')||'[]');
- history.unshift({
-  date:new Date().toLocaleString(),
-  score,correct,wrong,unattempted,
-  total:questions.length
- });
- localStorage.setItem('qmHistory',JSON.stringify(history.slice(0,30)));
+questions.forEach((q,i)=>{
+const div=document.createElement('div');
+div.className='review-item';
 
- show('resultSection');
+const h=document.createElement('b');
+h.textContent='Q'+(i+1)+'. '+q.question;
+div.appendChild(h);
+
+const p=document.createElement('p');
+p.textContent='Your answer: '+(answers[i]||'Not attempted');
+div.appendChild(p);
+
+const a=document.createElement('p');
+a.textContent='Correct answer: '+(q.answer||'Not available');
+div.appendChild(a);
+
+if(q.solution){
+const s=document.createElement('p');
+s.textContent='Solution: '+q.solution;
+div.appendChild(s);
 }
 
-function escapeHTML(str){
- return String(str).replace(/[&<>"']/g,c=>({
- '&':'&amp;','<':'&lt;','>':'&gt;',
- '"':'&quot;',"'":'&#39;'
- })[c]);
+$('analysis').appendChild(div);
+});
+
+saveHistory({
+date:new Date().toLocaleString(),
+correct,wrong,unattempted,
+total:questions.length,graded
+});
+
+show('resultSection');
+}
+
+// HISTORY
+function saveHistory(item){
+const history=JSON.parse(localStorage.getItem('qmHistory')||'[]');
+history.unshift(item);
+localStorage.setItem('qmHistory',JSON.stringify(history.slice(0,50)));
 }
 
 function showHistory(){
- const history=JSON.parse(localStorage.getItem('qmHistory')||'[]');
- $('history').innerHTML=history.length?'':'No test history yet.';
+const history=JSON.parse(localStorage.getItem('qmHistory')||'[]');
+$('history').innerHTML='';
 
- history.forEach(h=>{
-  const div=document.createElement('div');
-  div.className='card';
-  div.textContent=
-  `${h.date} | Score: ${h.score}/${h.total} | Correct: ${h.correct} | Wrong: ${h.wrong}`;
-  $('history').appendChild(div);
- });
- $('historySection').classList.remove('hidden');
+if(!history.length){
+$('history').textContent='No test history yet.';
+}else{
+history.forEach(h=>{
+const div=document.createElement('div');
+div.className='review-item';
+div.textContent=
+`${h.date} | Score: ${h.correct}/${h.graded} | Total: ${h.total} | Wrong: ${h.wrong}`;
+$('history').appendChild(div);
+});
 }
+
+$('historySection').classList.remove('hidden');
+}
+
+function clearHistory(){
+if(!confirm('Clear all test history?'))return;
+localStorage.removeItem('qmHistory');
+showHistory();
+}
+
 </script>
 </body>
 </html>
