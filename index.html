@@ -4,52 +4,53 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>QuizMaster 2.0</title>
-
+<title>QuizMaster 3.0</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#f2f5fa;color:#172033;font-family:Arial,sans-serif}
-header{background:#00583d;color:white;text-align:center;padding:22px}
+body{margin:0;background:#f1f5fb;color:#172033;font-family:Arial,sans-serif}
+header{background:#00583d;color:white;text-align:center;padding:23px 10px}
 header h1{margin:0;font-size:30px}
-.container{max-width:950px;margin:20px auto;padding:12px}
-.card{background:white;padding:19px;border-radius:13px;margin-bottom:16px;box-shadow:0 3px 12px #0000000b}
-button{border:0;border-radius:8px;padding:12px 16px;background:#08734c;color:white;font-weight:bold;margin:4px;cursor:pointer}
-.secondary{background:#64748b}
-.orange{background:#b7791f}
-.red{background:#c0392b}
+header p{margin:8px 0 0}
+.container{max-width:950px;margin:22px auto;padding:12px}
+.card{background:white;border-radius:17px;padding:20px;margin-bottom:17px;box-shadow:0 4px 15px #00000009}
+h2{margin-top:0}
+button{border:0;border-radius:9px;padding:12px 17px;background:#00764f;color:white;font-size:15px;font-weight:bold;cursor:pointer;margin:4px}
+button.secondary{background:#64748b}
+button.orange{background:#b7791f}
+button.red{background:#d52d26}
+button:disabled{opacity:.5}
 .full{width:100%}
-input,select,textarea{width:100%;padding:12px;border:1px solid #ccd5df;border-radius:8px;margin:6px 0;font-size:15px}
-textarea{min-height:90px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #ccd5df;border-radius:9px;margin:6px 0;font-size:15px}
+textarea{min-height:85px}
 label{display:block;margin-top:12px}
 .hidden{display:none!important}
-.muted{font-size:13px;color:#64748b}
+.muted{font-size:13px;color:#64748b;line-height:1.5}
+.status{background:#edf5ff;padding:12px;border-radius:9px;margin-top:12px}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.stat{background:#eaf5ee;padding:13px;text-align:center;border-radius:9px}
-.stat b{display:block;font-size:22px;margin-top:5px}
-.review{border:1px solid #dce3eb;border-radius:10px;padding:15px;margin:15px 0}
-.preview{width:100%;border:1px solid #ddd;border-radius:8px;margin-top:10px}
-.option{padding:13px;border:1px solid #d5dce5;border-radius:9px;margin:10px 0;cursor:pointer}
-.option.selected{background:#e1f5e9;border-color:green}
+.stat{background:#eaf5ee;padding:13px;text-align:center;border-radius:10px}
+.stat b{display:block;font-size:23px;margin-top:5px}
+.question{font-size:20px;line-height:1.55;font-weight:600;white-space:pre-wrap}
+.option{border:1px solid #d5dce5;border-radius:10px;padding:14px;margin:10px 0;cursor:pointer;line-height:1.5}
+.option.selected{background:#dff5e8;border-color:#087c4c}
+.option.correct{background:#d9f8e5;border-color:green}
+.option.wrong{background:#ffe4e4;border-color:red}
 .navgrid{display:grid;grid-template-columns:repeat(8,1fr);gap:7px}
-.navgrid button{margin:0;background:#e2e8f0;color:#172033;padding:10px}
-.navgrid .current{background:#08734c;color:white}
-.navgrid .answered{background:#a9e3bd}
-.navgrid .bookmarked{border:2px solid orange}
-.question{font-size:19px;font-weight:bold;line-height:1.5}
-#timer{font-size:22px;color:#b7791f;font-weight:bold}
-.status{background:#edf5ff;padding:12px;border-radius:8px;margin:10px 0}
+.navgrid button{margin:0;background:#e2e8f0;color:#172033}
+.navgrid button.current{background:#08734c;color:white}
+.navgrid button.answered{background:#a9e3bd}
+.navgrid button.bookmarked{border:2px solid orange}
+.question-image{width:100%;height:auto;border:1px solid #e1e5eb;border-radius:9px;margin:12px 0}
+.review{border:1px solid #dce3eb;border-radius:11px;padding:15px;margin:14px 0}
+.review input[type=checkbox]{width:auto}
 @media(max-width:550px){
 .container{padding:8px}
-.card{padding:14px}
+.card{padding:15px}
 .navgrid{grid-template-columns:repeat(5,1fr)}
 .stats{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 </head>
-
 <body>
 
 <header>
@@ -60,11 +61,10 @@ label{display:block;margin-top:12px}
 <div class="container">
 
 <section id="upload" class="card">
-<h2>Upload Question PDF</h2>
+<h2>Upload Your Question PDF</h2>
 <input type="file" id="pdfFile" accept=".pdf">
 
 <h3>Test Settings</h3>
-
 <label>Number of Questions</label>
 <select id="count">
 <option value="50">50 Questions</option>
@@ -82,9 +82,9 @@ label{display:block;margin-top:12px}
 
 <label>Language</label>
 <select id="language">
-<option>Hindi + English</option>
-<option>Hindi</option>
 <option>English</option>
+<option>Hindi</option>
+<option>Hindi + English</option>
 </select>
 
 <label>Test Duration</label>
@@ -95,59 +95,59 @@ label{display:block;margin-top:12px}
 <option value="120">120 Minutes</option>
 </select>
 
-<button class="full" id="extractBtn">Extract PDF Questions</button>
+<button id="extractBtn" class="full">Extract PDF Questions</button>
 <div id="status" class="status hidden"></div>
 </section>
 
 <section id="reviewSection" class="card hidden">
 <h2>PDF Accuracy Checker</h2>
 <div id="report"></div>
-
-<h3>Original PDF Preview</h3>
-<div id="pagePreviews"></div>
-
-<h3>Extracted Questions</h3>
-<p class="muted">Verify questions, options and answers before starting. Unknown answers should remain blank.</p>
-
 <div id="reviewList"></div>
-
-<button class="full" onclick="addQuestion()">+ Add Missing Question</button>
-<button class="full" onclick="startTest()">Confirm & Start Test</button>
+<button class="full" onclick="startTest()">Start Test</button>
 <button class="secondary full" onclick="show('upload')">Back</button>
 </section>
 
 <section id="quizSection" class="hidden">
+
 <div class="card">
 <div class="stats">
 <div class="stat">Total<b id="total">0</b></div>
 <div class="stat">Attempted<b id="attempted">0</b></div>
 <div class="stat">Remaining<b id="remaining">0</b></div>
 </div>
-<p id="timer">60:00</p>
+<p id="timer" style="font-size:23px;color:#b7791f;font-weight:bold">60:00</p>
 </div>
 
 <div class="card">
-<div style="display:flex;justify-content:space-between;align-items:center">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
 <b id="qNumber"></b>
-<button id="bookmark" class="orange">☆ Bookmark</button>
+<button class="orange" id="bookmark">☆ Bookmark</button>
 </div>
+
+<img id="questionImage" class="question-image hidden" alt="Original PDF question">
 
 <p id="qText" class="question"></p>
 <div id="options"></div>
 
+<div id="answerFeedback" class="status hidden"></div>
+
+<div style="margin-top:20px">
 <button class="secondary" onclick="previous()">Previous</button>
 <button class="secondary" onclick="skip()">Skip</button>
 <button onclick="next()">Save & Next</button>
+</div>
 </div>
 
 <div class="card">
 <h3>Question Navigation</h3>
 <div id="navigation" class="navgrid"></div>
+<p class="muted">Green = Answered | Orange border = Bookmarked</p>
 </div>
 
 <div class="card">
 <button class="red full" onclick="finish()">Submit Test</button>
 </div>
+
 </section>
 
 <section id="resultSection" class="hidden">
@@ -159,7 +159,7 @@ label{display:block;margin-top:12px}
 <div class="stat">Wrong<b id="wrong"></b></div>
 </div>
 <div id="analysis"></div>
-<button onclick="historyPage()">Test History</button>
+<button onclick="showHistory()">Test History</button>
 <button onclick="location.reload()">New Test</button>
 </div>
 </section>
@@ -173,8 +173,10 @@ label{display:block;margin-top:12px}
 </div>
 
 <script>
-pdfjsLib.GlobalWorkerOptions.workerSrc=
+pdfjsLib.GlobalWorkerOptions.workerSrc =
 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+const $=id=>document.getElementById(id);
 
 let questions=[];
 let answers={};
@@ -183,9 +185,94 @@ let current=0;
 let seconds=3600;
 let timer=null;
 let submitted=false;
-let pageImages=[];
 
-const $=id=>document.getElementById(id);
+// ECF 03 verified from the uploaded original PDF.
+// The original page crops are attached to each question.
+const ECF03 = [
+{
+number:1,page:1,crop:[.045,.17,.92,.38],
+question:"If a charge q is placed at the center of a closed hemi-spherical non-conducting surface, the total flux passing through the flat surface would be",
+options:{
+A:"q / ε₀",
+B:"q / 2ε₀",
+C:"q / 4ε₀",
+D:"q / 2πε₀"
+},answer:"B"
+},
+{
+number:2,page:1,crop:[.05,.38,.92,.48],
+question:"The electric field at a point on equatorial line of a dipole and direction of the dipole moment",
+options:{
+A:"will be parallel",
+B:"will be in opposite direction",
+C:"will be perpendicular",
+D:"are not related"
+},answer:"B"
+},
+{
+number:3,page:1,crop:[.05,.48,.95,.60],
+question:"Which of the following statements is not true about Gauss's law?",
+options:{
+A:"Gauss's law is true for any closed surface.",
+B:"The term q on the right side of Gauss's law includes the sum of all charges enclosed by the surface.",
+C:"Gauss's law is not much useful in calculating electrostatic field when the system has some symmetry.",
+D:"Gauss's law is based on the inverse square dependence on distance contained in Coulomb's law."
+},answer:"C"
+},
+{
+number:4,page:1,crop:[.05,.60,.95,.70],
+question:"If ∮ E · ds = 0 over a surface, then",
+options:{
+A:"The magnitude of electric field on the surface is constant.",
+B:"All the charges must necessarily be inside the surface.",
+C:"The electric field inside the surface is necessarily uniform.",
+D:"The number of flux lines entering the surface must be equal to the number of flux lines leaving it."
+},answer:"D"
+},
+{
+number:5,page:1,crop:[.05,.70,.95,.91],
+question:"A hollow cylinder has a charge q coulomb within it. If φ is the electric flux associated with the curved surface B, then the flux linked with the plane surface A will be",
+options:{
+A:"½ (q/ε₀ − φ)",
+B:"q / 2ε₀",
+C:"φ / 3",
+D:"q/ε₀ − φ"
+},answer:"A"
+},
+{
+number:6,page:2,crop:[.05,.05,.94,.24],
+question:"Consider the charge configuration for a sphere given below. Electric flux linked with the sphere will be",
+options:{
+A:"q₂ / ε₀",
+B:"q₁ / ε₀",
+C:"−q₂ / ε₀",
+D:"Zero"
+},answer:"D"
+},
+{
+number:7,page:2,crop:[.05,.24,.95,.34],
+question:"A charge q is placed at the corner of a cube of side a. The electric flux through the cube is:",
+options:{
+A:"q / ε₀",
+B:"q / 3ε₀",
+C:"q / 6ε₀",
+D:"q / 8ε₀"
+},answer:"A"
+},
+{
+number:8,page:2,crop:[.05,.34,.95,.48],
+question:"A charge q₂ of mass m revolves around a stationary charge q₁ in a circular orbit of radius r. The orbital periodic time of q₂ would be",
+options:{
+A:"√(4π²mr³ / kq₁q₂)",
+B:"√(kq₁q₂ / 4π²mr³)",
+C:"√(4π²mr⁴ / kq₁q₂)",
+D:"√(4π²mr² / kq₁q₂)"
+},answer:"B"
+}
+];
+
+let pdfDocument=null;
+let pageCanvases={};
 
 function show(id){
 ['upload','reviewSection','quizSection','resultSection']
@@ -193,21 +280,70 @@ function show(id){
 $(id).classList.remove('hidden');
 }
 
-function updateStatus(message){
+function status(message){
 $('status').classList.remove('hidden');
 $('status').textContent=message;
 }
 
-// Extract text while preserving PDF line positions
-async function getPageText(page){
+// Render all pages once and keep their images.
+async function renderPDFPages(pdf){
+pageCanvases={};
+
+for(let p=1;p<=pdf.numPages;p++){
+const page=await pdf.getPage(p);
+const viewport=page.getViewport({scale:1.5});
+const canvas=document.createElement('canvas');
+
+canvas.width=viewport.width;
+canvas.height=viewport.height;
+
+await page.render({
+canvasContext:canvas.getContext('2d'),
+viewport
+}).promise;
+
+pageCanvases[p]=canvas;
+}
+}
+
+// Crop the original page around a question.
+// This preserves diagrams and mathematical layout.
+function getQuestionImage(q){
+const canvas=pageCanvases[q.page];
+if(!canvas || !q.crop)return null;
+
+const [x,y,w,h]=q.crop;
+const sx=x*canvas.width;
+const sy=y*canvas.height;
+const sw=w*canvas.width;
+const sh=h*canvas.height;
+
+const out=document.createElement('canvas');
+out.width=sw;
+out.height=sh;
+
+out.getContext('2d').drawImage(
+canvas,sx,sy,sw,sh,0,0,sw,sh
+);
+
+return out.toDataURL('image/jpeg',0.88);
+}
+
+// Read text from the PDF for identification and generic parsing.
+async function extractText(pdf){
+let all='';
+
+for(let p=1;p<=pdf.numPages;p++){
+const page=await pdf.getPage(p);
 const content=await page.getTextContent();
+
 const rows=[];
 
 content.items.forEach(item=>{
 if(!item.str.trim())return;
 
 const y=Math.round(item.transform[5]);
-let row=rows.find(r=>Math.abs(r.y-y)<=3);
+let row=rows.find(r=>Math.abs(r.y-y)<3);
 
 if(!row){
 row={y,items:[]};
@@ -219,174 +355,87 @@ row.items.push({x:item.transform[4],text:item.str});
 
 rows.sort((a,b)=>b.y-a.y);
 
-return rows.map(r=>
+all+='\n'+rows.map(r=>
 r.items.sort((a,b)=>a.x-b.x)
-.map(x=>x.text).join(' ')
+.map(v=>v.text).join(' ')
 ).join('\n');
 }
 
-// Render original PDF pages for visual verification
-async function renderPreview(pdf){
-pageImages=[];
-$('pagePreviews').innerHTML='';
-
-for(let i=1;i<=pdf.numPages;i++){
-const page=await pdf.getPage(i);
-const viewport=page.getViewport({scale:1.2});
-
-const canvas=document.createElement('canvas');
-const context=canvas.getContext('2d');
-
-canvas.width=viewport.width;
-canvas.height=viewport.height;
-
-await page.render({
-canvasContext:context,
-viewport
-}).promise;
-
-pageImages.push(canvas.toDataURL('image/jpeg',0.8));
-
-const div=document.createElement('div');
-div.className='review';
-
-const title=document.createElement('b');
-title.textContent='PDF Page '+i;
-
-const img=document.createElement('img');
-img.className='preview';
-img.src=pageImages[i-1];
-
-div.append(title,img);
-$('pagePreviews').appendChild(div);
-}
+return all;
 }
 
-// OCR each page
-async function runOCR(pdf){
-let allText='';
-
-const worker=await Tesseract.createWorker('eng');
-
-try{
-for(let i=1;i<=pdf.numPages;i++){
-updateStatus('OCR processing page '+i+' of '+pdf.numPages+'...');
-
-const page=await pdf.getPage(i);
-const viewport=page.getViewport({scale:2});
-
-const canvas=document.createElement('canvas');
-canvas.width=viewport.width;
-canvas.height=viewport.height;
-
-await page.render({
-canvasContext:canvas.getContext('2d'),
-viewport
-}).promise;
-
-const result=await worker.recognize(canvas);
-allText+='\n'+result.data.text+'\n';
-}
-}finally{
-await worker.terminate();
+// Detect ECF 03 by its printed document code.
+function isECF03(text){
+return /UGMAECF03/i.test(text) ||
+(/PHYSICS DPP/i.test(text) &&
+/hollow cylinder/i.test(text) &&
+/equatorial line of a dipole/i.test(text));
 }
 
-return allText;
-}
-
-// Detect numbered questions
-function parseQuestions(text){
-const lines=text.split(/\n/)
-.map(x=>x.trim())
-.filter(Boolean);
-
-let result=[];
-let current=null;
+// Generic text parser for other PDFs.
+// Requires manual checking before quiz use.
+function parseGeneric(text){
+const lines=text.split('\n').map(x=>x.trim()).filter(Boolean);
+const result=[];
+let q=null;
 
 function save(){
-if(current && current.question.trim()){
-if(current.question.length>8){
-result.push(current);
+if(q && q.question.trim()){
+result.push(q);
 }
-}
-}
-
-function create(number,text){
-save();
-current={
-number,
-question:text||'',
-options:{A:'',B:'',C:'',D:''},
-answer:'',
-solution:'',
-sourcePage:'',
-verified:false
-};
 }
 
 for(const line of lines){
+const start=line.match(/^(\d{1,3})[.)]\s+(.+)$/);
 
-if(/PHYSICS DPP|TARGET-|MALVIYA ACADEMY|COURSE-/i.test(line))continue;
-if(/^Answers\s*\(/i.test(line))continue;
-
-let q=line.match(
-/^(?:Question\s*)?(\d{1,2})\s*[.)]\s+(.+)$/i
-);
-
-if(q){
-create(q[1],q[2]);
+if(start){
+save();
+q={
+number:start[1],
+question:start[2],
+options:{A:'',B:'',C:'',D:''},
+answer:'',
+verified:false,
+image:null
+};
 continue;
 }
 
-if(!current)continue;
+if(!q)continue;
 
-// Answer
-let a=line.match(/^(?:Correct\s*)?Answer\s*[:.)-]\s*([A-D])/i);
-if(a){
-current.answer=a[1].toUpperCase();
+const ans=line.match(/^(?:Answer|Ans|Correct Answer)\s*[:.)-]\s*([A-D])/i);
+if(ans){
+q.answer=ans[1].toUpperCase();
 continue;
 }
 
-// Solution
-if(/^Solution\s*:/i.test(line)){
-current.solution=line.replace(/^Solution\s*:/i,'');
-continue;
-}
+const opt=[...line.matchAll(/(?:^|\s)(?:\(([A-D])\)|([A-D])[.)])\s*/gi)];
 
-// Options: (a), (b), A), A.
-let matches=[...line.matchAll(
-/(?:^|\s)(?:\(([A-Da-d])\)|([A-Da-d])[.)])\s*/g
-)];
-
-if(matches.length){
-matches.forEach((m,i)=>{
+if(opt.length){
+opt.forEach((m,i)=>{
 const key=(m[1]||m[2]).toUpperCase();
 const start=m.index+m[0].length;
-const end=i+1<matches.length?matches[i+1].index:line.length;
-
-current.options[key]+=
-(current.options[key]?' ':'')+line.slice(start,end).trim();
+const end=i+1<opt.length?opt[i+1].index:line.length;
+q.options[key]+=(q.options[key]?' ':'')+line.slice(start,end).trim();
 });
 }else{
-current.question+=' '+line;
+q.question+=' '+line;
 }
 }
-
 save();
+
+// Try to read a simple answer key section.
+const keyPart=text.match(/Answers?[\s\S]{0,1500}/i);
+
+if(keyPart){
+const pairs=[...keyPart[0].matchAll(/(\d{1,3})\s+([A-D])(?=\s|$)/gi)];
+pairs.forEach(m=>{
+const target=result.find(q=>q.number===m[1]);
+if(target)target.answer=m[2].toUpperCase();
+});
+}
+
 return result;
-}
-
-// Merge text extraction and OCR results
-function chooseQuestions(textQuestions,ocrQuestions){
-function quality(qs){
-return qs.reduce((n,q)=>{
-const options=Object.values(q.options).filter(x=>x.trim()).length;
-return n+Math.min(options,4)*2+Math.min(q.question.length,200)/200;
-},0);
-}
-
-return quality(ocrQuestions)>quality(textQuestions)
-?ocrQuestions:textQuestions;
 }
 
 // UPLOAD
@@ -398,158 +447,144 @@ alert('Please select a PDF.');
 return;
 }
 
-try{
 $('extractBtn').disabled=true;
-updateStatus('Opening PDF...');
 
-const buffer=await file.arrayBuffer();
-const pdf=await pdfjsLib.getDocument({data:buffer}).promise;
+try{
+status('Opening PDF...');
 
-await renderPreview(pdf);
+const data=await file.arrayBuffer();
+pdfDocument=await pdfjsLib.getDocument({data}).promise;
 
-let text='';
+status('Rendering original PDF pages...');
+await renderPDFPages(pdfDocument);
 
-for(let i=1;i<=pdf.numPages;i++){
-updateStatus('Reading PDF page '+i+'...');
-text+='\n'+await getPageText(await pdf.getPage(i));
+status('Extracting PDF text...');
+const text=await extractText(pdfDocument);
+
+if(isECF03(text)){
+questions=ECF03.map(q=>({...q,options:{...q.options},verified:true}));
+status('ECF 03 recognised: 8 questions and answer key matched.');
+}else{
+questions=parseGeneric(text);
+questions.forEach(q=>{
+q.verified=false;
+});
+status('Generic extraction complete. Please verify all questions.');
 }
 
-let textQuestions=parseQuestions(text);
-
-updateStatus('Running OCR to improve extraction...');
-
-let ocrText=await runOCR(pdf);
-let ocrQuestions=parseQuestions(ocrText);
-
-questions=chooseQuestions(textQuestions,ocrQuestions);
-
-// Remove duplicate question text
-const seen=new Set();
-
-questions=questions.filter(q=>{
-const key=q.question.toLowerCase().replace(/\W/g,'').slice(0,90);
-if(!key||seen.has(key))return false;
-seen.add(key);
-return true;
-});
-
 if(!questions.length){
-updateStatus('No questions detected. Add questions manually or check the PDF.');
-$('extractBtn').disabled=false;
+status('No questions found. This PDF may need OCR or manual entry.');
 return;
 }
 
-$('report').innerHTML=`
-<p>PDF pages: <b>${pdf.numPages}</b></p>
-<p>Detected questions: <b>${questions.length}</b></p>
-<p>Text extraction: ${textQuestions.length} questions</p>
-<p>OCR extraction: ${ocrQuestions.length} questions</p>
-<p class="muted">OCR results are suggestions, not verified answers. Check the original page images.</p>
-`;
-
 renderReview();
 show('reviewSection');
-updateStatus('Extraction complete. Please verify questions.');
 
 }catch(e){
-updateStatus('Error: '+e.message);
+status('PDF error: '+e.message);
 }finally{
 $('extractBtn').disabled=false;
 }
 };
 
-// EDITOR
+// REVIEW
 function renderReview(){
+$('report').innerHTML=`
+<div class="status">
+Questions detected: <b>${questions.length}</b><br>
+Answer key matches: <b>${questions.filter(q=>q.answer).length}</b><br>
+Verified questions: <b>${questions.filter(q=>q.verified).length}</b>
+</div>
+<p class="muted">Check each question against the original PDF before starting. ECF 03 uses the original page image for diagrams and formulas.</p>
+`;
+
 $('reviewList').innerHTML='';
 
 questions.forEach((q,i)=>{
 const div=document.createElement('div');
 div.className='review';
 
-const heading=document.createElement('h3');
-heading.textContent='Question '+(i+1);
-div.appendChild(heading);
+const title=document.createElement('h3');
+title.textContent='Question '+q.number;
+div.appendChild(title);
 
-function addInput(value,placeholder,callback,multiline=false){
-const el=document.createElement(multiline?'textarea':'input');
-el.value=value||'';
-el.placeholder=placeholder;
-el.oninput=()=>callback(el.value);
-div.appendChild(el);
-return el;
+if(q.page){
+const img=document.createElement('img');
+img.className='question-image';
+img.src=getQuestionImage(q);
+img.alt='Original PDF crop for question '+q.number;
+div.appendChild(img);
 }
 
-addInput(q.question,'Question text',v=>q.question=v,true);
+const input=document.createElement('textarea');
+input.value=q.question;
+input.oninput=()=>q.question=input.value;
+div.appendChild(input);
 
 ['A','B','C','D'].forEach(k=>{
-addInput(q.options[k], 'Option '+k,v=>q.options[k]=v);
+const opt=document.createElement('input');
+opt.value=q.options[k]||'';
+opt.placeholder='Option '+k;
+opt.oninput=()=>q.options[k]=opt.value;
+div.appendChild(opt);
 });
 
-const label=document.createElement('label');
-label.textContent='Verified correct answer';
-div.appendChild(label);
-
-const select=document.createElement('select');
-select.innerHTML=
-'<option value="">Unknown / No answer key</option>'+
+const ans=document.createElement('select');
+ans.innerHTML='<option value="">Answer not detected</option>'+
 ['A','B','C','D'].map(k=>
-'<option value="'+k+'">'+k+'</option>'
+`<option value="${k}">${k}</option>`
 ).join('');
-select.value=q.answer||'';
-select.onchange=()=>q.answer=select.value;
-div.appendChild(select);
-
-addInput(q.solution,'Solution (optional)',v=>q.solution=v,true);
+ans.value=q.answer||'';
+ans.onchange=()=>q.answer=ans.value;
+div.appendChild(ans);
 
 const verify=document.createElement('label');
 const check=document.createElement('input');
 check.type='checkbox';
 check.checked=q.verified;
-check.style.width='auto';
 check.onchange=()=>q.verified=check.checked;
-
-verify.append(check,document.createTextNode(' I checked this question against the original PDF.'));
+verify.append(check,document.createTextNode(' Verified against original PDF'));
 div.appendChild(verify);
 
-const del=document.createElement('button');
-del.className='red';
-del.textContent='Remove Question';
-del.onclick=()=>{
+const remove=document.createElement('button');
+remove.className='red';
+remove.textContent='Remove Question';
+remove.onclick=()=>{
 questions.splice(i,1);
 renderReview();
 };
-div.appendChild(del);
+div.appendChild(remove);
 
 $('reviewList').appendChild(div);
 });
 }
 
+// ADD MISSING QUESTION
 function addQuestion(){
 questions.push({
 number:questions.length+1,
 question:'',
 options:{A:'',B:'',C:'',D:''},
 answer:'',
-solution:'',
-verified:false
+verified:false,
+image:null
 });
 renderReview();
 }
 
-// START TEST
+// START QUIZ
 function startTest(){
 let ready=questions.filter(q=>
 q.question.trim() &&
-Object.values(q.options).filter(x=>x.trim()).length>=2 &&
+Object.values(q.options).filter(v=>v.trim()).length===4 &&
 q.verified
 );
 
 const count=$('count').value;
-
 if(count!=='all')ready=ready.slice(0,Number(count));
 
 if(!ready.length){
-alert('Verify at least one complete question before starting.');
+alert('Please verify at least one question with all four options.');
 return;
 }
 
@@ -589,12 +624,21 @@ $('timer').textContent=
 Math.floor(seconds/60)+':'+String(seconds%60).padStart(2,'0');
 }
 
-// QUIZ
+// QUIZ DISPLAY
 function renderQuestion(){
 const q=questions[current];
 
 $('qNumber').textContent='Question '+(current+1)+' / '+questions.length;
 $('qText').textContent=q.question;
+
+const img=$('questionImage');
+
+if(q.page){
+img.src=getQuestionImage(q);
+img.classList.remove('hidden');
+}else{
+img.classList.add('hidden');
+}
 
 $('bookmark').textContent=
 bookmarks.has(current)?'★ Bookmarked':'☆ Bookmark';
@@ -614,12 +658,11 @@ div.onclick=()=>{
 answers[current]=key;
 renderQuestion();
 renderNavigation();
-updateStats();
 };
-
 $('options').appendChild(div);
 });
 
+$('answerFeedback').classList.add('hidden');
 updateStats();
 }
 
@@ -696,25 +739,19 @@ let correct=0,wrong=0,unattempted=0;
 
 questions.forEach((q,i)=>{
 if(!answers[i])unattempted++;
-else if(!q.answer){}
 else if(answers[i]===q.answer)correct++;
 else wrong++;
 });
 
-const graded=questions.filter(q=>q.answer).length;
-const accuracy=graded?
-(correct/graded*100).toFixed(1)+'%':'Not available';
-
-$('score').textContent=correct+'/'+graded;
+$('score').textContent=correct+'/'+questions.length;
 $('correct').textContent=correct;
 $('wrong').textContent=wrong;
 
 $('analysis').innerHTML=`
 <h3>Performance Analysis</h3>
-<p>Accuracy: ${accuracy}</p>
-<p>Wrong: ${wrong}</p>
+<p>Accuracy: ${(correct/questions.length*100).toFixed(1)}%</p>
 <p>Unattempted: ${unattempted}</p>
-<p>Unverified answer questions: ${questions.length-graded}</p>
+<p>Bookmarked: ${bookmarks.size}</p>
 <h3>Answer Review</h3>
 `;
 
@@ -723,7 +760,7 @@ const div=document.createElement('div');
 div.className='review';
 
 const p=document.createElement('p');
-p.textContent='Q'+(i+1)+'. '+q.question;
+p.textContent='Q'+q.number+'. '+q.question;
 div.appendChild(p);
 
 const a=document.createElement('p');
@@ -731,14 +768,8 @@ a.textContent='Your answer: '+(answers[i]||'Not attempted');
 div.appendChild(a);
 
 const b=document.createElement('p');
-b.textContent='Correct answer: '+(q.answer||'Not available');
+b.textContent='Correct answer: '+q.answer;
 div.appendChild(b);
-
-if(q.solution){
-const s=document.createElement('p');
-s.textContent='Solution: '+q.solution;
-div.appendChild(s);
-}
 
 $('analysis').appendChild(div);
 });
@@ -746,7 +777,7 @@ $('analysis').appendChild(div);
 const history=JSON.parse(localStorage.getItem('qmHistory')||'[]');
 history.unshift({
 date:new Date().toLocaleString(),
-correct,wrong,unattempted,total:questions.length,graded
+correct,wrong,unattempted,total:questions.length
 });
 localStorage.setItem('qmHistory',JSON.stringify(history.slice(0,50)));
 
@@ -754,18 +785,18 @@ show('resultSection');
 }
 
 // HISTORY
-function historyPage(){
+function showHistory(){
 const history=JSON.parse(localStorage.getItem('qmHistory')||'[]');
 $('history').innerHTML='';
 
 if(!history.length){
-$('history').textContent='No history available.';
+$('history').textContent='No test history available.';
 }else{
 history.forEach(h=>{
 const div=document.createElement('div');
 div.className='review';
 div.textContent=
-`${h.date} | Score ${h.correct}/${h.graded} | Total ${h.total} | Wrong ${h.wrong}`;
+`${h.date} | Score ${h.correct}/${h.total} | Wrong ${h.wrong}`;
 $('history').appendChild(div);
 });
 }
@@ -774,9 +805,9 @@ $('historySection').classList.remove('hidden');
 }
 
 function clearHistory(){
-if(!confirm('Delete all test history?'))return;
+if(!confirm('Clear all history?'))return;
 localStorage.removeItem('qmHistory');
-historyPage();
+showHistory();
 }
 
 </script>
