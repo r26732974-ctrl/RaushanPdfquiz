@@ -3,58 +3,55 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QuizMaster - Smart PDF Quiz</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QuizMaster 2.0</title>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#f2f5fa;color:#172033;font-family:Arial,sans-serif}
-header{background:#00583d;color:white;text-align:center;padding:23px 10px}
+header{background:#00583d;color:white;text-align:center;padding:22px}
 header h1{margin:0;font-size:30px}
-header p{margin:8px 0 0}
-.container{max-width:950px;margin:22px auto;padding:12px}
-.card{background:white;border-radius:14px;padding:20px;margin-bottom:17px;box-shadow:0 3px 15px #0000000b}
-h2,h3{margin-top:0}
-button{background:#08734c;color:white;border:0;padding:12px 17px;border-radius:8px;font-weight:bold;cursor:pointer;margin:4px}
-button.secondary{background:#64748b}
-button.orange{background:#b7791f}
-button.red{background:#c0392b}
-button:disabled{opacity:.4}
-input,select,textarea{max-width:100%;padding:12px;border:1px solid #ccd5df;border-radius:8px;margin:5px 0;font-size:15px}
-input[type=file]{width:100%}
-textarea{width:100%;min-height:100px}
-label{display:block;margin-top:12px}
+.container{max-width:950px;margin:20px auto;padding:12px}
+.card{background:white;padding:19px;border-radius:13px;margin-bottom:16px;box-shadow:0 3px 12px #0000000b}
+button{border:0;border-radius:8px;padding:12px 16px;background:#08734c;color:white;font-weight:bold;margin:4px;cursor:pointer}
+.secondary{background:#64748b}
+.orange{background:#b7791f}
+.red{background:#c0392b}
 .full{width:100%}
+input,select,textarea{width:100%;padding:12px;border:1px solid #ccd5df;border-radius:8px;margin:6px 0;font-size:15px}
+textarea{min-height:90px}
+label{display:block;margin-top:12px}
 .hidden{display:none!important}
-.muted{color:#64748b;font-size:13px}
+.muted{font-size:13px;color:#64748b}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.stat{background:#eaf5ee;border-radius:10px;padding:14px;text-align:center}
-.stat b{font-size:22px;display:block;margin-top:5px}
-.option{border:1px solid #d5dce5;border-radius:9px;padding:13px;margin:10px 0;cursor:pointer}
-.option.selected{background:#e1f5e9;border-color:#16834e}
-.option.correct{background:#d9f8e5;border-color:green}
-.option.wrong{background:#ffe5e5;border-color:red}
+.stat{background:#eaf5ee;padding:13px;text-align:center;border-radius:9px}
+.stat b{display:block;font-size:22px;margin-top:5px}
+.review{border:1px solid #dce3eb;border-radius:10px;padding:15px;margin:15px 0}
+.preview{width:100%;border:1px solid #ddd;border-radius:8px;margin-top:10px}
+.option{padding:13px;border:1px solid #d5dce5;border-radius:9px;margin:10px 0;cursor:pointer}
+.option.selected{background:#e1f5e9;border-color:green}
 .navgrid{display:grid;grid-template-columns:repeat(8,1fr);gap:7px}
 .navgrid button{margin:0;background:#e2e8f0;color:#172033;padding:10px}
-.navgrid button.current{background:#08734c;color:white}
-.navgrid button.answered{background:#a9e3bd}
-.navgrid button.bookmarked{border:2px solid orange}
-.review-item{border:1px solid #dce3eb;border-radius:10px;padding:15px;margin:14px 0}
-.review-item input{width:100%}
-.review-item .option-input{display:grid;grid-template-columns:35px 1fr;align-items:center}
+.navgrid .current{background:#08734c;color:white}
+.navgrid .answered{background:#a9e3bd}
+.navgrid .bookmarked{border:2px solid orange}
 .question{font-size:19px;font-weight:bold;line-height:1.5}
-#timer{font-size:22px;font-weight:bold;color:#b7791f}
+#timer{font-size:22px;color:#b7791f;font-weight:bold}
+.status{background:#edf5ff;padding:12px;border-radius:8px;margin:10px 0}
 @media(max-width:550px){
- .container{padding:8px}
- .card{padding:15px}
- .navgrid{grid-template-columns:repeat(5,1fr)}
- .stats{grid-template-columns:repeat(2,1fr)}
+.container{padding:8px}
+.card{padding:14px}
+.navgrid{grid-template-columns:repeat(5,1fr)}
+.stats{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 </head>
 
 <body>
+
 <header>
 <h1>📚 QuizMaster</h1>
 <p>Your PDF, Your Quiz, Your Success.</p>
@@ -62,15 +59,14 @@ label{display:block;margin-top:12px}
 
 <div class="container">
 
-<!-- UPLOAD -->
-<section id="uploadSection" class="card">
+<section id="upload" class="card">
 <h2>Upload Question PDF</h2>
-<p class="muted">Upload your original question paper.</p>
 <input type="file" id="pdfFile" accept=".pdf">
 
 <h3>Test Settings</h3>
+
 <label>Number of Questions</label>
-<select id="questionCount" class="full">
+<select id="count">
 <option value="50">50 Questions</option>
 <option value="25">25 Questions</option>
 <option value="10">10 Questions</option>
@@ -78,108 +74,106 @@ label{display:block;margin-top:12px}
 </select>
 
 <label>Difficulty</label>
-<select id="difficulty" class="full">
+<select id="difficulty">
 <option>Medium</option>
 <option>Easy</option>
 <option>Hard</option>
 </select>
 
 <label>Language</label>
-<select id="language" class="full">
+<select id="language">
 <option>Hindi + English</option>
 <option>Hindi</option>
 <option>English</option>
 </select>
 
 <label>Test Duration</label>
-<select id="duration" class="full">
+<select id="duration">
 <option value="60">60 Minutes</option>
 <option value="30">30 Minutes</option>
 <option value="90">90 Minutes</option>
 <option value="120">120 Minutes</option>
 </select>
 
-<button id="loadBtn" class="full">Extract PDF Questions</button>
-<p id="uploadStatus" class="muted"></p>
+<button class="full" id="extractBtn">Extract PDF Questions</button>
+<div id="status" class="status hidden"></div>
 </section>
 
-<!-- PDF REVIEW -->
 <section id="reviewSection" class="card hidden">
 <h2>PDF Accuracy Checker</h2>
 <div id="report"></div>
 
+<h3>Original PDF Preview</h3>
+<div id="pagePreviews"></div>
+
 <h3>Extracted Questions</h3>
-<p class="muted">Check every question and fill any missing options. Enter the correct answer only when verified from a reliable answer key.</p>
+<p class="muted">Verify questions, options and answers before starting. Unknown answers should remain blank.</p>
 
 <div id="reviewList"></div>
 
-<button onclick="startTest()" class="full">Confirm & Start Test</button>
-<button class="secondary full" onclick="backToUpload()">Back to Upload</button>
+<button class="full" onclick="addQuestion()">+ Add Missing Question</button>
+<button class="full" onclick="startTest()">Confirm & Start Test</button>
+<button class="secondary full" onclick="show('upload')">Back</button>
 </section>
 
-<!-- QUIZ -->
 <section id="quizSection" class="hidden">
 <div class="card">
 <div class="stats">
-<div class="stat">Total<b id="totalCount">0</b></div>
-<div class="stat">Attempted<b id="attemptedCount">0</b></div>
-<div class="stat">Remaining<b id="remainingCount">0</b></div>
+<div class="stat">Total<b id="total">0</b></div>
+<div class="stat">Attempted<b id="attempted">0</b></div>
+<div class="stat">Remaining<b id="remaining">0</b></div>
 </div>
 <p id="timer">60:00</p>
 </div>
 
 <div class="card">
-<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-<b id="questionNumber"></b>
-<button id="bookmarkBtn" class="orange">☆ Bookmark</button>
+<div style="display:flex;justify-content:space-between;align-items:center">
+<b id="qNumber"></b>
+<button id="bookmark" class="orange">☆ Bookmark</button>
 </div>
-<p id="questionText" class="question"></p>
+
+<p id="qText" class="question"></p>
 <div id="options"></div>
 
-<div style="margin-top:18px">
-<button class="secondary" onclick="previousQuestion()">Previous</button>
-<button class="secondary" onclick="skipQuestion()">Skip</button>
-<button onclick="saveNext()">Save & Next</button>
-</div>
+<button class="secondary" onclick="previous()">Previous</button>
+<button class="secondary" onclick="skip()">Skip</button>
+<button onclick="next()">Save & Next</button>
 </div>
 
 <div class="card">
 <h3>Question Navigation</h3>
 <div id="navigation" class="navgrid"></div>
-<p class="muted">Green = Answered | Orange border = Bookmarked</p>
 </div>
 
 <div class="card">
-<button class="red full" onclick="finishTest()">Submit Test</button>
+<button class="red full" onclick="finish()">Submit Test</button>
 </div>
 </section>
 
-<!-- RESULT -->
 <section id="resultSection" class="hidden">
 <div class="card">
 <h2>🏆 Test Result</h2>
 <div class="stats">
-<div class="stat">Score<b id="score">0</b></div>
-<div class="stat">Correct<b id="correct">0</b></div>
-<div class="stat">Wrong<b id="wrong">0</b></div>
+<div class="stat">Score<b id="score"></b></div>
+<div class="stat">Correct<b id="correct"></b></div>
+<div class="stat">Wrong<b id="wrong"></b></div>
 </div>
 <div id="analysis"></div>
-<button onclick="showHistory()">Test History</button>
+<button onclick="historyPage()">Test History</button>
 <button onclick="location.reload()">New Test</button>
 </div>
 </section>
 
-<!-- HISTORY -->
 <section id="historySection" class="card hidden">
 <h2>Test History</h2>
 <div id="history"></div>
-<button onclick="clearHistory()" class="red">Clear History</button>
+<button class="red" onclick="clearHistory()">Clear History</button>
 </section>
 
 </div>
 
 <script>
-pdfjsLib.GlobalWorkerOptions.workerSrc =
+pdfjsLib.GlobalWorkerOptions.workerSrc=
 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
 let questions=[];
@@ -187,32 +181,30 @@ let answers={};
 let bookmarks=new Set();
 let current=0;
 let seconds=3600;
-let timerInterval=null;
+let timer=null;
 let submitted=false;
+let pageImages=[];
 
 const $=id=>document.getElementById(id);
 
 function show(id){
-['uploadSection','reviewSection','quizSection','resultSection']
+['upload','reviewSection','quizSection','resultSection']
 .forEach(x=>$(x).classList.add('hidden'));
 $(id).classList.remove('hidden');
 }
 
-function backToUpload(){
-show('uploadSection');
+function updateStatus(message){
+$('status').classList.remove('hidden');
+$('status').textContent=message;
 }
 
-// PDF TEXT EXTRACTION WITH LAYOUT
-async function extractPDF(pdf){
-let pages=[];
-
-for(let p=1;p<=pdf.numPages;p++){
-const page=await pdf.getPage(p);
+// Extract text while preserving PDF line positions
+async function getPageText(page){
 const content=await page.getTextContent();
-let rows=[];
+const rows=[];
 
 content.items.forEach(item=>{
-if(!item.str || !item.str.trim())return;
+if(!item.str.trim())return;
 
 const y=Math.round(item.transform[5]);
 let row=rows.find(r=>Math.abs(r.y-y)<=3);
@@ -222,23 +214,87 @@ row={y,items:[]};
 rows.push(row);
 }
 
-row.items.push({
-x:item.transform[4],
-text:item.str
-});
+row.items.push({x:item.transform[4],text:item.str});
 });
 
 rows.sort((a,b)=>b.y-a.y);
 
-pages.push(rows.map(row=>
-row.items.sort((a,b)=>a.x-b.x)
+return rows.map(r=>
+r.items.sort((a,b)=>a.x-b.x)
 .map(x=>x.text).join(' ')
-).join('\n'));
-}
-return pages.join('\n\n');
+).join('\n');
 }
 
-// QUESTION PARSER
+// Render original PDF pages for visual verification
+async function renderPreview(pdf){
+pageImages=[];
+$('pagePreviews').innerHTML='';
+
+for(let i=1;i<=pdf.numPages;i++){
+const page=await pdf.getPage(i);
+const viewport=page.getViewport({scale:1.2});
+
+const canvas=document.createElement('canvas');
+const context=canvas.getContext('2d');
+
+canvas.width=viewport.width;
+canvas.height=viewport.height;
+
+await page.render({
+canvasContext:context,
+viewport
+}).promise;
+
+pageImages.push(canvas.toDataURL('image/jpeg',0.8));
+
+const div=document.createElement('div');
+div.className='review';
+
+const title=document.createElement('b');
+title.textContent='PDF Page '+i;
+
+const img=document.createElement('img');
+img.className='preview';
+img.src=pageImages[i-1];
+
+div.append(title,img);
+$('pagePreviews').appendChild(div);
+}
+}
+
+// OCR each page
+async function runOCR(pdf){
+let allText='';
+
+const worker=await Tesseract.createWorker('eng');
+
+try{
+for(let i=1;i<=pdf.numPages;i++){
+updateStatus('OCR processing page '+i+' of '+pdf.numPages+'...');
+
+const page=await pdf.getPage(i);
+const viewport=page.getViewport({scale:2});
+
+const canvas=document.createElement('canvas');
+canvas.width=viewport.width;
+canvas.height=viewport.height;
+
+await page.render({
+canvasContext:canvas.getContext('2d'),
+viewport
+}).promise;
+
+const result=await worker.recognize(canvas);
+allText+='\n'+result.data.text+'\n';
+}
+}finally{
+await worker.terminate();
+}
+
+return allText;
+}
+
+// Detect numbered questions
 function parseQuestions(text){
 const lines=text.split(/\n/)
 .map(x=>x.trim())
@@ -249,86 +305,92 @@ let current=null;
 
 function save(){
 if(current && current.question.trim()){
-const keys=Object.keys(current.options);
-if(keys.length>=2 || current.question.length>15){
-current.needsReview=
-keys.length<4 || !current.answer;
+if(current.question.length>8){
 result.push(current);
 }
 }
 }
 
-function newQuestion(number,question){
+function create(number,text){
 save();
 current={
-number:String(number),
-question:question||'',
+number,
+question:text||'',
 options:{A:'',B:'',C:'',D:''},
 answer:'',
 solution:'',
-needsReview:true
+sourcePage:'',
+verified:false
 };
 }
 
-for(let line of lines){
+for(const line of lines){
 
-// Ignore headers and footer
-if(/PHYSICS DPP|Target-|Course-|Malviya Academy/i.test(line))continue;
+if(/PHYSICS DPP|TARGET-|MALVIYA ACADEMY|COURSE-/i.test(line))continue;
 if(/^Answers\s*\(/i.test(line))continue;
 
-// Numbered question
-let q=line.match(/^(\d{1,2})[.)]\s+(.+)$/);
+let q=line.match(
+/^(?:Question\s*)?(\d{1,2})\s*[.)]\s+(.+)$/i
+);
 
 if(q){
-newQuestion(q[1],q[2]);
+create(q[1],q[2]);
 continue;
 }
 
-if(!current){
-// Recover some unnumbered questions from this PDF
-if(/^(Consider the charge configuration|A charge q is placed|charge qz of mass)/i.test(line)){
-newQuestion(result.length+1,line);
-}
-continue;
-}
+if(!current)continue;
 
-// Answer key
-let ans=line.match(/^(?:Correct\s*)?Answer\s*[:.)-]\s*([A-D])/i);
-if(ans){
-current.answer=ans[1].toUpperCase();
+// Answer
+let a=line.match(/^(?:Correct\s*)?Answer\s*[:.)-]\s*([A-D])/i);
+if(a){
+current.answer=a[1].toUpperCase();
 continue;
 }
 
 // Solution
 if(/^Solution\s*:/i.test(line)){
-current.solution=line.replace(/^Solution\s*:/i,'').trim();
+current.solution=line.replace(/^Solution\s*:/i,'');
 continue;
 }
 
-// Standard option labels
-let markers=[...line.matchAll(/(?:^|\s)(?:\(([A-Da-d])\)|([A-Da-d])[.)])\s*/g)];
+// Options: (a), (b), A), A.
+let matches=[...line.matchAll(
+/(?:^|\s)(?:\(([A-Da-d])\)|([A-Da-d])[.)])\s*/g
+)];
 
-if(markers.length){
-markers.forEach((m,i)=>{
+if(matches.length){
+matches.forEach((m,i)=>{
 const key=(m[1]||m[2]).toUpperCase();
 const start=m.index+m[0].length;
-const end=i+1<markers.length?markers[i+1].index:line.length;
-const value=line.slice(start,end).trim();
-current.options[key]+=(current.options[key]?' ':'')+value;
-});
-continue;
-}
+const end=i+1<matches.length?matches[i+1].index:line.length;
 
-// Continuation
+current.options[key]+=
+(current.options[key]?' ':'')+line.slice(start,end).trim();
+});
+}else{
 current.question+=' '+line;
+}
 }
 
 save();
 return result;
 }
 
-// UPLOAD BUTTON
-$('loadBtn').onclick=async()=>{
+// Merge text extraction and OCR results
+function chooseQuestions(textQuestions,ocrQuestions){
+function quality(qs){
+return qs.reduce((n,q)=>{
+const options=Object.values(q.options).filter(x=>x.trim()).length;
+return n+Math.min(options,4)*2+Math.min(q.question.length,200)/200;
+},0);
+}
+
+return quality(ocrQuestions)>quality(textQuestions)
+?ocrQuestions:textQuestions;
+}
+
+// UPLOAD
+$('extractBtn').onclick=async()=>{
 const file=$('pdfFile').files[0];
 
 if(!file){
@@ -336,115 +398,158 @@ alert('Please select a PDF.');
 return;
 }
 
-$('uploadStatus').textContent='Reading PDF...';
-
 try{
+$('extractBtn').disabled=true;
+updateStatus('Opening PDF...');
+
 const buffer=await file.arrayBuffer();
 const pdf=await pdfjsLib.getDocument({data:buffer}).promise;
 
-const text=await extractPDF(pdf);
-questions=parseQuestions(text);
+await renderPreview(pdf);
+
+let text='';
+
+for(let i=1;i<=pdf.numPages;i++){
+updateStatus('Reading PDF page '+i+'...');
+text+='\n'+await getPageText(await pdf.getPage(i));
+}
+
+let textQuestions=parseQuestions(text);
+
+updateStatus('Running OCR to improve extraction...');
+
+let ocrText=await runOCR(pdf);
+let ocrQuestions=parseQuestions(ocrText);
+
+questions=chooseQuestions(textQuestions,ocrQuestions);
+
+// Remove duplicate question text
+const seen=new Set();
+
+questions=questions.filter(q=>{
+const key=q.question.toLowerCase().replace(/\W/g,'').slice(0,90);
+if(!key||seen.has(key))return false;
+seen.add(key);
+return true;
+});
 
 if(!questions.length){
-$('uploadStatus').textContent=
-'No questions detected. This PDF may need OCR or manual processing.';
+updateStatus('No questions detected. Add questions manually or check the PDF.');
+$('extractBtn').disabled=false;
 return;
 }
 
-answers={};
-bookmarks.clear();
-
-const incomplete=questions.filter(q=>
-!Object.values(q.options).some(x=>x.trim())
-).length;
-
 $('report').innerHTML=`
-<p>PDF Pages: <b>${pdf.numPages}</b></p>
-<p>Questions detected: <b>${questions.length}</b></p>
-<p>Questions needing option verification: <b>${incomplete}</b></p>
-<p>Answer keys found: <b>${questions.filter(q=>q.answer).length}</b></p>
-<p class="muted">Images, formulas and unusual symbol fonts may require manual correction.</p>
+<p>PDF pages: <b>${pdf.numPages}</b></p>
+<p>Detected questions: <b>${questions.length}</b></p>
+<p>Text extraction: ${textQuestions.length} questions</p>
+<p>OCR extraction: ${ocrQuestions.length} questions</p>
+<p class="muted">OCR results are suggestions, not verified answers. Check the original page images.</p>
 `;
 
 renderReview();
-$('uploadStatus').textContent='Extraction completed.';
 show('reviewSection');
+updateStatus('Extraction complete. Please verify questions.');
 
 }catch(e){
-$('uploadStatus').textContent='PDF Error: '+e.message;
+updateStatus('Error: '+e.message);
+}finally{
+$('extractBtn').disabled=false;
 }
 };
 
-// QUESTION REVIEW AND EDITOR
+// EDITOR
 function renderReview(){
 $('reviewList').innerHTML='';
 
 questions.forEach((q,i)=>{
 const div=document.createElement('div');
-div.className='review-item';
+div.className='review';
 
-const title=document.createElement('h3');
-title.textContent='Question '+(i+1);
-div.appendChild(title);
+const heading=document.createElement('h3');
+heading.textContent='Question '+(i+1);
+div.appendChild(heading);
 
-const question=document.createElement('textarea');
-question.value=q.question;
-question.placeholder='Enter question';
-question.oninput=()=>q.question=question.value;
-div.appendChild(question);
+function addInput(value,placeholder,callback,multiline=false){
+const el=document.createElement(multiline?'textarea':'input');
+el.value=value||'';
+el.placeholder=placeholder;
+el.oninput=()=>callback(el.value);
+div.appendChild(el);
+return el;
+}
+
+addInput(q.question,'Question text',v=>q.question=v,true);
 
 ['A','B','C','D'].forEach(k=>{
-const row=document.createElement('div');
-row.className='option-input';
-
-const label=document.createElement('b');
-label.textContent=k+'.';
-
-const input=document.createElement('input');
-input.value=q.options[k]||'';
-input.placeholder='Enter option '+k;
-input.oninput=()=>q.options[k]=input.value;
-
-row.append(label,input);
-div.appendChild(row);
+addInput(q.options[k], 'Option '+k,v=>q.options[k]=v);
 });
 
-const answerLabel=document.createElement('label');
-answerLabel.textContent='Verified correct answer';
-div.appendChild(answerLabel);
+const label=document.createElement('label');
+label.textContent='Verified correct answer';
+div.appendChild(label);
 
 const select=document.createElement('select');
-select.innerHTML='<option value="">Not provided / Unknown</option>'+
+select.innerHTML=
+'<option value="">Unknown / No answer key</option>'+
 ['A','B','C','D'].map(k=>
-`<option value="${k}">${k}</option>`
+'<option value="'+k+'">'+k+'</option>'
 ).join('');
 select.value=q.answer||'';
 select.onchange=()=>q.answer=select.value;
 div.appendChild(select);
 
-const solution=document.createElement('textarea');
-solution.value=q.solution||'';
-solution.placeholder='Solution (optional)';
-solution.oninput=()=>q.solution=solution.value;
-div.appendChild(solution);
+addInput(q.solution,'Solution (optional)',v=>q.solution=v,true);
+
+const verify=document.createElement('label');
+const check=document.createElement('input');
+check.type='checkbox';
+check.checked=q.verified;
+check.style.width='auto';
+check.onchange=()=>q.verified=check.checked;
+
+verify.append(check,document.createTextNode(' I checked this question against the original PDF.'));
+div.appendChild(verify);
+
+const del=document.createElement('button');
+del.className='red';
+del.textContent='Remove Question';
+del.onclick=()=>{
+questions.splice(i,1);
+renderReview();
+};
+div.appendChild(del);
 
 $('reviewList').appendChild(div);
 });
 }
 
-// START QUIZ
-function startTest(){
-const count=$('questionCount').value;
+function addQuestion(){
+questions.push({
+number:questions.length+1,
+question:'',
+options:{A:'',B:'',C:'',D:''},
+answer:'',
+solution:'',
+verified:false
+});
+renderReview();
+}
 
+// START TEST
+function startTest(){
 let ready=questions.filter(q=>
 q.question.trim() &&
-Object.values(q.options).filter(x=>x.trim()).length>=2
+Object.values(q.options).filter(x=>x.trim()).length>=2 &&
+q.verified
 );
+
+const count=$('count').value;
 
 if(count!=='all')ready=ready.slice(0,Number(count));
 
 if(!ready.length){
-alert('Please complete at least one question and two options.');
+alert('Verify at least one complete question before starting.');
 return;
 }
 
@@ -453,28 +558,28 @@ answers={};
 bookmarks.clear();
 current=0;
 submitted=false;
-
 seconds=Number($('duration').value)*60;
-$('totalCount').textContent=questions.length;
 
+$('total').textContent=questions.length;
 show('quizSection');
+
 renderQuestion();
 renderNavigation();
-updateStats();
 startTimer();
 }
 
+// TIMER
 function startTimer(){
-clearInterval(timerInterval);
+clearInterval(timer);
 updateTimer();
 
-timerInterval=setInterval(()=>{
+timer=setInterval(()=>{
 seconds--;
 updateTimer();
 
 if(seconds<=0){
-clearInterval(timerInterval);
-finishTest(true);
+clearInterval(timer);
+finish(true);
 }
 },1000);
 }
@@ -484,16 +589,14 @@ $('timer').textContent=
 Math.floor(seconds/60)+':'+String(seconds%60).padStart(2,'0');
 }
 
-// DISPLAY QUESTION
+// QUIZ
 function renderQuestion(){
 const q=questions[current];
 
-$('questionNumber').textContent=
-'Question '+(current+1)+' / '+questions.length;
+$('qNumber').textContent='Question '+(current+1)+' / '+questions.length;
+$('qText').textContent=q.question;
 
-$('questionText').textContent=q.question;
-
-$('bookmarkBtn').textContent=
+$('bookmark').textContent=
 bookmarks.has(current)?'★ Bookmarked':'☆ Bookmark';
 
 $('options').innerHTML='';
@@ -522,8 +625,8 @@ updateStats();
 
 function updateStats(){
 const done=Object.keys(answers).length;
-$('attemptedCount').textContent=done;
-$('remainingCount').textContent=questions.length-done;
+$('attempted').textContent=done;
+$('remaining').textContent=questions.length-done;
 }
 
 function renderNavigation(){
@@ -547,7 +650,7 @@ $('navigation').appendChild(btn);
 });
 }
 
-function previousQuestion(){
+function previous(){
 if(current>0){
 current--;
 renderQuestion();
@@ -555,7 +658,7 @@ renderNavigation();
 }
 }
 
-function skipQuestion(){
+function skip(){
 if(current<questions.length-1){
 current++;
 renderQuestion();
@@ -563,7 +666,7 @@ renderNavigation();
 }
 }
 
-function saveNext(){
+function next(){
 if(current<questions.length-1){
 current++;
 renderQuestion();
@@ -573,40 +676,34 @@ alert('Last question reached. Submit your test.');
 }
 }
 
-$('bookmarkBtn').onclick=()=>{
+$('bookmark').onclick=()=>{
 if(bookmarks.has(current))bookmarks.delete(current);
 else bookmarks.add(current);
-
 renderQuestion();
 renderNavigation();
 };
 
-// SUBMIT AND ANALYSIS
-function finishTest(auto=false){
+// RESULTS
+function finish(auto=false){
 if(submitted)return;
 
-if(!auto && !confirm('Submit your test?'))return;
+if(!auto&&!confirm('Submit your test?'))return;
 
 submitted=true;
-clearInterval(timerInterval);
+clearInterval(timer);
 
-let correct=0,wrong=0,unattempted=0,ungraded=0;
+let correct=0,wrong=0,unattempted=0;
 
 questions.forEach((q,i)=>{
-if(!answers[i]){
-unattempted++;
-}else if(!q.answer){
-ungraded++;
-}else if(answers[i]===q.answer){
-correct++;
-}else{
-wrong++;
-}
+if(!answers[i])unattempted++;
+else if(!q.answer){}
+else if(answers[i]===q.answer)correct++;
+else wrong++;
 });
 
 const graded=questions.filter(q=>q.answer).length;
-const percentage=graded?
-(correct/graded*100).toFixed(1):'Not available';
+const accuracy=graded?
+(correct/graded*100).toFixed(1)+'%':'Not available';
 
 $('score').textContent=correct+'/'+graded;
 $('correct').textContent=correct;
@@ -614,29 +711,28 @@ $('wrong').textContent=wrong;
 
 $('analysis').innerHTML=`
 <h3>Performance Analysis</h3>
-<p>Accuracy among attempted graded questions: ${percentage}%</p>
-<p>Wrong answers: ${wrong}</p>
+<p>Accuracy: ${accuracy}</p>
+<p>Wrong: ${wrong}</p>
 <p>Unattempted: ${unattempted}</p>
-<p>Questions without verified answer keys: ${questions.length-graded}</p>
-<p>Bookmarked: ${bookmarks.size}</p>
+<p>Unverified answer questions: ${questions.length-graded}</p>
 <h3>Answer Review</h3>
 `;
 
 questions.forEach((q,i)=>{
 const div=document.createElement('div');
-div.className='review-item';
-
-const h=document.createElement('b');
-h.textContent='Q'+(i+1)+'. '+q.question;
-div.appendChild(h);
+div.className='review';
 
 const p=document.createElement('p');
-p.textContent='Your answer: '+(answers[i]||'Not attempted');
+p.textContent='Q'+(i+1)+'. '+q.question;
 div.appendChild(p);
 
 const a=document.createElement('p');
-a.textContent='Correct answer: '+(q.answer||'Not available');
+a.textContent='Your answer: '+(answers[i]||'Not attempted');
 div.appendChild(a);
+
+const b=document.createElement('p');
+b.textContent='Correct answer: '+(q.answer||'Not available');
+div.appendChild(b);
 
 if(q.solution){
 const s=document.createElement('p');
@@ -647,34 +743,29 @@ div.appendChild(s);
 $('analysis').appendChild(div);
 });
 
-saveHistory({
+const history=JSON.parse(localStorage.getItem('qmHistory')||'[]');
+history.unshift({
 date:new Date().toLocaleString(),
-correct,wrong,unattempted,
-total:questions.length,graded
+correct,wrong,unattempted,total:questions.length,graded
 });
+localStorage.setItem('qmHistory',JSON.stringify(history.slice(0,50)));
 
 show('resultSection');
 }
 
 // HISTORY
-function saveHistory(item){
-const history=JSON.parse(localStorage.getItem('qmHistory')||'[]');
-history.unshift(item);
-localStorage.setItem('qmHistory',JSON.stringify(history.slice(0,50)));
-}
-
-function showHistory(){
+function historyPage(){
 const history=JSON.parse(localStorage.getItem('qmHistory')||'[]');
 $('history').innerHTML='';
 
 if(!history.length){
-$('history').textContent='No test history yet.';
+$('history').textContent='No history available.';
 }else{
 history.forEach(h=>{
 const div=document.createElement('div');
-div.className='review-item';
+div.className='review';
 div.textContent=
-`${h.date} | Score: ${h.correct}/${h.graded} | Total: ${h.total} | Wrong: ${h.wrong}`;
+`${h.date} | Score ${h.correct}/${h.graded} | Total ${h.total} | Wrong ${h.wrong}`;
 $('history').appendChild(div);
 });
 }
@@ -683,9 +774,9 @@ $('historySection').classList.remove('hidden');
 }
 
 function clearHistory(){
-if(!confirm('Clear all test history?'))return;
+if(!confirm('Delete all test history?'))return;
 localStorage.removeItem('qmHistory');
-showHistory();
+historyPage();
 }
 
 </script>
