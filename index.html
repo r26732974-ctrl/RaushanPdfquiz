@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>RaushanPdfquiz 3.0</title>
+<title>RaushanPdfquiz 3.2</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>
 :root{--green:#137a50;--green2:#e8f5ee;--ink:#17231d;--muted:#65736b;--line:#dce7df;--bg:#f4f8f5;--red:#b42318;--amber:#946200}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif}header{background:linear-gradient(120deg,#126b47,#199765);color:white;padding:22px 16px}header .wrap,main{max-width:1100px;margin:auto}h1{margin:0;font-size:25px}header p{margin:6px 0 0;opacity:.9}.wrap{padding-left:16px;padding-right:16px}main{padding:18px 14px 50px}.panel{background:white;border:1px solid var(--line);border-radius:15px;padding:16px;margin-bottom:15px;box-shadow:0 3px 14px #173d2610}.panel h2{font-size:18px;margin:0 0 12px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;padding:11px;border:1px solid #cbd8cf;border-radius:9px;background:white;color:var(--ink);font:inherit}.field textarea{min-height:74px;resize:vertical}.btn{border:0;border-radius:9px;padding:11px 15px;font-weight:700;cursor:pointer;background:var(--green);color:white}.btn.secondary{background:#eaf2ed;color:#155b3e;border:1px solid #c9dfd1}.btn.dark{background:#263a30}.btn.danger{background:#a93226}.btn:disabled{opacity:.5;cursor:not-allowed}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}.muted{color:var(--muted);font-size:13px;line-height:1.5}.status{padding:10px 12px;border-radius:9px;background:#edf5ef;margin-top:10px;font-size:13px;white-space:pre-wrap}.status.warn{background:#fff6df;color:#765000}.status.error{background:#fff0ef;color:#98251d}.hidden{display:none!important}.stats{display:flex;gap:9px;flex-wrap:wrap}.stat{background:#f0f6f2;padding:10px 13px;border-radius:10px;font-size:13px}.stat b{display:block;font-size:19px}.question{border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0;background:#fff}.qtop{display:flex;justify-content:space-between;gap:10px;align-items:center}.tag{font-size:11px;padding:5px 8px;border-radius:20px;background:#edf5ef;color:#286344;font-weight:700}.tag.bad{background:#fff1df;color:#855400}.qtext{font-weight:700;line-height:1.5;margin:12px 0}.options{display:grid;gap:8px}.option{border:1px solid #d5e0d8;padding:10px;border-radius:9px;background:#fbfdfb}.option input{margin-right:7px}.qimage{width:100%;max-height:360px;object-fit:contain;background:#f5f5f5;border-radius:8px;margin-top:8px}.editorgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.small{font-size:12px}.quiz-option{display:block;width:100%;text-align:left;padding:13px;margin:8px 0;border:1px solid var(--line);background:white;border-radius:10px;cursor:pointer;font-size:15px}.quiz-option.selected{border:2px solid var(--green);background:var(--green2)}.quiz-option.correct{border:2px solid #16834e;background:#e8f7ee}.quiz-option.wrong{border:2px solid #c53c32;background:#fff0ef}.bar{height:8px;background:#e7eee9;border-radius:9px;overflow:hidden;margin:10px 0}.bar span{display:block;height:100%;background:var(--green);width:0}.footer-note{font-size:12px;color:var(--muted);text-align:center;padding:12px}.pill{display:inline-block;padding:4px 8px;border-radius:99px;background:#edf5ef;font-size:12px;margin:2px}.reviewrow{padding:10px;border-bottom:1px solid var(--line)}@media(max-width:650px){.editorgrid{grid-template-columns:1fr}h1{font-size:22px}.qtop{align-items:flex-start}}
 </style></head>
 <body>
-<header><div class="wrap"><h1>📚 RaushanPdfquiz 3.0</h1><p>PDF se quiz banao · Review karo · Practice karo</p></div></header>
+<header><div class="wrap"><h1>📚 RaushanPdfquiz 3.2</h1><p>PDF se quiz banao · Review karo · Practice karo</p></div></header>
 <main>
 <section class="panel" id="uploadPanel"><h2>1. PDF upload karo</h2><div class="field"><label>PDF file</label><input id="pdfFile" type="file" accept="application/pdf"></div><p class="muted">Text-based PDF se direct extraction hogi. Scanned/image PDF ke liye OCR option use hoga. Original question-page image quiz mein dikhaya jayega.</p><div class="grid"><div class="field"><label>Questions</label><select id="count"><option value="50">50</option><option value="25">25</option><option value="10">10</option><option value="all">All detected</option></select></div><div class="field"><label>Difficulty label</label><select id="difficulty"><option>Medium</option><option>Easy</option><option>Hard</option><option>Mixed</option></select></div><div class="field"><label>Quiz timer (minutes)</label><input id="duration" type="number" min="1" max="600" value="60"></div><div class="field"><label>OCR for scanned PDF</label><select id="ocr"><option value="auto">Auto (if text is missing)</option><option value="yes">Always run OCR</option><option value="no">Text extraction only</option></select></div></div><div class="actions"><button class="btn" id="extractBtn">Extract Questions</button><button class="btn secondary" id="ocrBtn">Run OCR on PDF</button></div><div id="uploadStatus" class="status">PDF select karke Extract Questions dabao.</div></section>
 <section class="panel hidden" id="reviewPanel"><h2>2. PDF Accuracy Checker</h2><div class="stats" id="reviewStats"></div><p class="muted">Har detected question check karo. Correct answer PDF ki answer key se mile to auto-fill hoga; warna answer manually select karo. Doubtful question ko verify kiye bina quiz mein include mat karo.</p><div class="actions"><button class="btn secondary" id="selectAllBtn">Select all verified</button><button class="btn" id="startBtn">Start Quiz</button><button class="btn secondary" id="exportBtn">Export extracted JSON</button></div><div id="questionEditors"></div></section>
@@ -27,39 +27,71 @@ function normalize(s){return clean(s).toLowerCase().replace(/[^a-z0-9]+/g,' ').t
 function splitLines(items){let lines=[];for(const it of items){let y=Math.round(it.transform?.[5]||0);let line=lines.find(x=>Math.abs(x.y-y)<=3);if(!line){line={y,text:''};lines.push(line)}line.text+=(line.text?' ':'')+it.str}return lines.sort((a,b)=>b.y-a.y).map(x=>clean(x.text)).filter(Boolean)}
 function parseAnswerMap(text){let map={};let patterns=[/(?:answer\s*key|answers?|ans\.?)[\s\S]{0,1200}/i];let region=text.match(patterns[0]);let src=region?region[0]:text;let re=/(?:Q(?:uestion)?\s*)?(\d{1,3})\s*[.)\-:]?\s*(?:Ans\.?|Answer)?\s*[:.)\-]?\s*\(?([A-D])\)?\b/gi;let m;while((m=re.exec(src))!==null)map[+m[1]]=m[2].toUpperCase();return map}
 function parseText(text,pageNo){
- let lines=(text||'').split(/\n/).map(clean).filter(Boolean),out=[],cur=null;
- const flush=()=>{if(cur){cur.text=clean(cur.text);out.push(cur);cur=null}};
- const newQ=/^(?:Q(?:uestion)?\s*)?(\d{1,3})\s*(?:[.)\]:-]\s*|\s{1,})(.+)$/i;
- const optStart=/(?:^|\s)(?:\(?([A-D])\)?\s*[.)\]:-])\s*/g;
- const isAnswer=/^(?:answer\s*key|answers?|ans\.?|correct\s+option|solution|explanation)\b/i;
- for(let line of lines){
-   if(isAnswer.test(line)){let a=line.match(/(?:answer|ans\.?|correct\s+option)\s*[:.)-]?\s*\(?([A-D])\)?/i);if(a&&cur)cur.answer=a[1].toUpperCase();continue}
-   let qm=line.match(newQ);
-   if(qm && !/^(?:19|20)\d{2}$/.test(qm[1])){
-     flush();cur={number:+qm[1],text:qm[2]||'',options:{},page:pageNo,answer:'',verified:false,source:'text',imagePage:pageNo};continue;
-   }
-   if(!cur)continue;
-   let trimmed=line.trim();
-   let optionLine=trimmed.match(/^\(?([A-D])\)?\s*[.)\]:-]\s*(.+)$/i);
-   if(optionLine){cur.options[optionLine[1].toUpperCase()]=optionLine[2].trim();continue}
-   let matches=[...trimmed.matchAll(optStart)];
-   if(matches.length>=2){
-     let prefix=trimmed.slice(0,matches[0].index).trim();
-     if(prefix)cur.text+=' '+prefix;
-     for(let j=0;j<matches.length;j++){
-       let m=matches[j],key=m[1].toUpperCase(),a=m.index+m[0].length,b=j+1<matches.length?matches[j+1].index:trimmed.length;
-       cur.options[key]=trimmed.slice(a,b).trim();
+ const lines=(text||'').replace(/\r/g,'\n').split(/\n/).map(x=>clean(x)).filter(Boolean);
+ const out=[]; let cur=null, numericOptions={}, optionMode=false, solutionMode=false;
+ const flush=()=>{
+   if(!cur)return;
+   cur.text=clean(cur.text);
+   // Some CUET PDFs list choices as 1..4, then map A..D to those numbers.
+   if(cur.optionMap){
+     for(const k of ['A','B','C','D']){
+       const v=cur.optionMap[k];
+       if(v && numericOptions[String(v)]) cur.options[k]=numericOptions[String(v)];
      }
+   }
+   cur.options={A:cur.options.A||'',B:cur.options.B||'',C:cur.options.C||'',D:cur.options.D||''};
+   if(cur.text && Object.values(cur.options).filter(Boolean).length>=2) out.push(cur);
+   cur=null; numericOptions={}; optionMode=false; solutionMode=false;
+ };
+ const qHead=/^(?:question|ques\.?|q\.?)[\s:#-]*(\d{1,3})\s*[.):\]-]?\s*(.*)$/i;
+ const answerLine=/^(?:answer|ans\.?|correct\s+answer|correct\s+option)\s*[:.)-]?\s*(.*)$/i;
+ const stopLine=/^(?:solution|explanation|detailed\s+solution|cuet\s+tip|answer\s+key)\b/i;
+ const parseABCD=(line)=>{
+   const re=/(?:^|\s)([A-D])\s*[.)\]:-]\s*([^\s].*?)(?=\s+[A-D]\s*[.)\]:-]\s*|$)/gi;
+   let m,found={}; while((m=re.exec(line))!==null) found[m[1].toUpperCase()]=clean(m[2]); return found;
+ };
+ for(let raw of lines){
+   let line=raw.replace(/\s+/g,' ').trim();
+   if(/^[-_]{8,}$/.test(line)) { flush(); continue; }
+   let qmatch=line.match(qHead);
+   if(qmatch){
+     flush(); cur={number:+qmatch[1],text:qmatch[2]||'',options:{},optionMap:null,page:pageNo,answer:'',verified:false,source:'text',imagePage:pageNo}; continue;
+   }
+   if(!cur) continue;
+   if(stopLine.test(line)){solutionMode=true;continue;}
+   if(solutionMode) continue;
+   let am=line.match(answerLine);
+   if(am){
+     let val=am[1].match(/\b([A-D])\b/i);
+     if(val)cur.answer=val[1].toUpperCase();
+     else {let n=am[1].match(/\b([1-4])\b/);if(n){let key=Object.keys(cur.optionMap||{}).find(k=>String(cur.optionMap[k])===n[1]);if(key)cur.answer=key;}}
+     solutionMode=true; continue;
+   }
+   if(/^options?\s*:/i.test(line)){
+     optionMode=true;
+     const mapping=parseABCD(line.replace(/^options?\s*:/i,''));
+     if(Object.keys(mapping).length>=2){cur.optionMap={};for(const k of Object.keys(mapping)){let n=mapping[k].match(/^\(?([1-4])\)?$/);if(n)cur.optionMap[k]=n[1];else cur.options[k]=mapping[k];}}
      continue;
    }
-   if(matches.length===1 && matches[0].index===0){
-     let m=matches[0],key=m[1].toUpperCase();cur.options[key]=trimmed.slice(m.index+m[0].length).trim();continue;
+   if(optionMode){
+     const inline=parseABCD(line);
+     if(Object.keys(inline).length>=2){
+       cur.optionMap=cur.optionMap||{};
+       for(const k of Object.keys(inline)){const n=inline[k].match(/^\(?([1-4])\)?$/);if(n)cur.optionMap[k]=n[1];else cur.options[k]=inline[k];}
+       continue;
+     }
+     const labelled=line.match(/^\(?([A-D])\)?\s*[.)\]:-]\s*(.+)$/i);
+     if(labelled){cur.options[labelled[1].toUpperCase()]=labelled[2].trim();continue;}
    }
-   if(Object.keys(cur.options).length<4)cur.text+=' '+trimmed;
-   else cur.text+=' '+trimmed;
+   // Numbered choices (1. ..., 2. ...) are choices, not new questions.
+   const numbered=line.match(/^\(?([1-4])\)?\s*[.)\]:-]\s*(.+)$/);
+   if(numbered){numericOptions[numbered[1]]=numbered[2].trim();continue;}
+   const labelled=line.match(/^\(?([A-D])\)?\s*[.)\]:-]\s*(.+)$/i);
+   if(labelled){optionMode=true;cur.options[labelled[1].toUpperCase()]=labelled[2].trim();continue;}
+   if(!optionMode) cur.text+=(cur.text?' ':'')+line;
  }
  flush();
- return out.filter(q=>q.text&&Object.values(q.options).filter(Boolean).length>=2);
+ return out;
 }
 function addImageCanvas(pageNum){let c=pages[pageNum-1];return c?c.toDataURL('image/jpeg',.72):''}
 async function loadPdf(file){let buf=await file.arrayBuffer();pdfDoc=await pdfjsLib.getDocument({data:buf}).promise;pages=[];let texts=[];for(let p=1;p<=pdfDoc.numPages;p++){let page=await pdfDoc.getPage(p),vp=page.getViewport({scale:1.25}),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');canvas.width=vp.width;canvas.height=vp.height;await page.render({canvasContext:ctx,viewport:vp}).promise;pages.push(canvas);let tc=await page.getTextContent();texts.push(splitLines(tc.items).join('\n'))}return texts}
