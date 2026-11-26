@@ -26,12 +26,76 @@ function clean(s){return (s||'').replace(/\u00a0/g,' ').replace(/[\t ]+/g,' ').r
 function normalize(s){return clean(s).toLowerCase().replace(/[^a-z0-9]+/g,' ').trim()}
 function splitLines(items){let lines=[];for(const it of items){let y=Math.round(it.transform?.[5]||0);let line=lines.find(x=>Math.abs(x.y-y)<=3);if(!line){line={y,text:''};lines.push(line)}line.text+=(line.text?' ':'')+it.str}return lines.sort((a,b)=>b.y-a.y).map(x=>clean(x.text)).filter(Boolean)}
 function parseAnswerMap(text){let map={};let patterns=[/(?:answer\s*key|answers?|ans\.?)[\s\S]{0,1200}/i];let region=text.match(patterns[0]);let src=region?region[0]:text;let re=/(?:Q(?:uestion)?\s*)?(\d{1,3})\s*[.)\-:]?\s*(?:Ans\.?|Answer)?\s*[:.)\-]?\s*\(?([A-D])\)?\b/gi;let m;while((m=re.exec(src))!==null)map[+m[1]]=m[2].toUpperCase();return map}
-function parseText(text,pageNo){let lines=text.split('\n').map(clean).filter(Boolean),out=[],cur=null;const flush=()=>{if(cur){out.push(cur);cur=null}};for(let i=0;i<lines.length;i++){let line=lines[i];let qm=line.match(/^\s*(?:Q(?:uestion)?\s*)?(\d{1,3})\s*[.)\-:]\s*(.+)$/i);let option=line.match(/^\s*\(?([A-D])\)?\s*[.)\]:\-]\s*(.+)$/i);let inlineOpts=[...line.matchAll(/(?:^|\s)([A-D])\s*[.)]\s*/g)];if(qm && (line.length>4)){flush();cur={number:+qm[1],text:qm[2],options:{},page:pageNo,answer:'',verified:false,source:'text',imagePage:pageNo};continue}if(!cur){let plain=line.match(/^\d{1,3}\s+(.{12,})$/);if(plain){flush();cur={number:+plain[0].match(/^\d+/)[0],text:plain[1],options:{},page:pageNo,answer:'',verified:false,source:'text',imagePage:pageNo};continue}continue}if(option){cur.options[option[1].toUpperCase()]=option[2];continue}if(inlineOpts.length>=2){let first=inlineOpts[0].index;let prefix=line.slice(0,first).trim();if(prefix.length>4)cur.text+=' '+prefix;for(let j=0;j<inlineOpts.length;j++){let mt=inlineOpts[j],start=mt.index+mt[0].length,end=j+1<inlineOpts.length?inlineOpts[j+1].index:line.length;cur.options[mt[1].toUpperCase()]=line.slice(start,end).trim()}continue}if(/^(?:answer|ans\.?|solution|explanation)\s*[:.-]/i.test(line)){let a=line.match(/(?:answer|ans\.?)[\s:.-]*\(?([A-D])\)?/i);if(a)cur.answer=a[1].toUpperCase();continue}if(Object.keys(cur.options).length<4)cur.text+=' '+line;else cur.text+=' '+line}flush();return out.filter(q=>q.text&&Object.keys(q.options).length>=2)}
+function parseText(text,pageNo){
+ let lines=(text||'').split(/\n/).map(clean).filter(Boolean),out=[],cur=null;
+ const flush=()=>{if(cur){cur.text=clean(cur.text);out.push(cur);cur=null}};
+ const newQ=/^(?:Q(?:uestion)?\s*)?(\d{1,3})\s*(?:[.)\]:-]\s*|\s{1,})(.+)$/i;
+ const optStart=/(?:^|\s)(?:\(?([A-D])\)?\s*[.)\]:-])\s*/g;
+ const isAnswer=/^(?:answer\s*key|answers?|ans\.?|correct\s+option|solution|explanation)\b/i;
+ for(let line of lines){
+   if(isAnswer.test(line)){let a=line.match(/(?:answer|ans\.?|correct\s+option)\s*[:.)-]?\s*\(?([A-D])\)?/i);if(a&&cur)cur.answer=a[1].toUpperCase();continue}
+   let qm=line.match(newQ);
+   if(qm && !/^(?:19|20)\d{2}$/.test(qm[1])){
+     flush();cur={number:+qm[1],text:qm[2]||'',options:{},page:pageNo,answer:'',verified:false,source:'text',imagePage:pageNo};continue;
+   }
+   if(!cur)continue;
+   let trimmed=line.trim();
+   let optionLine=trimmed.match(/^\(?([A-D])\)?\s*[.)\]:-]\s*(.+)$/i);
+   if(optionLine){cur.options[optionLine[1].toUpperCase()]=optionLine[2].trim();continue}
+   let matches=[...trimmed.matchAll(optStart)];
+   if(matches.length>=2){
+     let prefix=trimmed.slice(0,matches[0].index).trim();
+     if(prefix)cur.text+=' '+prefix;
+     for(let j=0;j<matches.length;j++){
+       let m=matches[j],key=m[1].toUpperCase(),a=m.index+m[0].length,b=j+1<matches.length?matches[j+1].index:trimmed.length;
+       cur.options[key]=trimmed.slice(a,b).trim();
+     }
+     continue;
+   }
+   if(matches.length===1 && matches[0].index===0){
+     let m=matches[0],key=m[1].toUpperCase();cur.options[key]=trimmed.slice(m.index+m[0].length).trim();continue;
+   }
+   if(Object.keys(cur.options).length<4)cur.text+=' '+trimmed;
+   else cur.text+=' '+trimmed;
+ }
+ flush();
+ return out.filter(q=>q.text&&Object.values(q.options).filter(Boolean).length>=2);
+}
 function addImageCanvas(pageNum){let c=pages[pageNum-1];return c?c.toDataURL('image/jpeg',.72):''}
 async function loadPdf(file){let buf=await file.arrayBuffer();pdfDoc=await pdfjsLib.getDocument({data:buf}).promise;pages=[];let texts=[];for(let p=1;p<=pdfDoc.numPages;p++){let page=await pdfDoc.getPage(p),vp=page.getViewport({scale:1.25}),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');canvas.width=vp.width;canvas.height=vp.height;await page.render({canvasContext:ctx,viewport:vp}).promise;pages.push(canvas);let tc=await page.getTextContent();texts.push(splitLines(tc.items).join('\n'))}return texts}
 function mergeQuestionFragments(qs){let seen=new Set(),out=[];for(let q of qs){let key=normalize(q.text).slice(0,90);if(key.length<5||seen.has(key))continue;seen.add(key);q.options={A:q.options.A||'',B:q.options.B||'',C:q.options.C||'',D:q.options.D||''};q.verified=!!(q.text&&Object.values(q.options).filter(Boolean).length>=2);out.push(q)}return out}
-async function doExtract(forceOCR=false){let file=$('pdfFile').files[0];if(!file){status('Pehle PDF file select karo.','warn');return}if(!window.pdfjsLib){status('PDF.js load nahi hua. Internet connection check karo.','error');return}$('extractBtn').disabled=true;try{status('PDF read ho raha hai...');let texts=await loadPdf(file),allText=texts.join('\n\n'),found=[];for(let i=0;i<texts.length;i++)found.push(...parseText(texts[i],i+1));let needOCR=forceOCR||$('ocr').value==='yes'||($('ocr').value==='auto'&&allText.replace(/\s/g,'').length<80);if(needOCR){status('OCR chal raha hai. Large PDF mein kuch waqt lag sakta hai...');let ocrText=[];for(let i=0;i<pages.length;i++){let result=await Tesseract.recognize(pages[i].toDataURL('image/png'),'eng',{logger:m=>{if(m.status==='recognizing text')status(`OCR page ${i+1}/${pages.length}: ${Math.round((m.progress||0)*100)}%`)}});ocrText.push(result.data.text)}texts=ocrText;found=[];for(let i=0;i<texts.length;i++)found.push(...parseText(texts[i],i+1));allText=texts.join('\n\n')}
-let amap=parseAnswerMap(allText);questions=mergeQuestionFragments(found).map(q=>({...q,answer:q.answer||amap[q.number]||'',image:addImageCanvas(q.page)}));if(!questions.length){status('Questions detect nahi hue. PDF ka layout alag ho sakta hai. OCR try karo ya PDF ka text format check karo.','warn');$('reviewPanel').classList.add('hidden');return}renderReview();$('reviewPanel').classList.remove('hidden');status(`${questions.length} possible questions mile. Ab Accuracy Checker mein review karo.`)}catch(e){console.error(e);status('PDF process nahi ho paya: '+e.message,'error')}finally{$('extractBtn').disabled=false}}
+async function doExtract(forceOCR=false){
+ let file=$('pdfFile').files[0];
+ if(!file){status('Pehle PDF file select karo.','warn');return}
+ if(!window.pdfjsLib){status('PDF.js load nahi hua. Internet connection check karo.','error');return}
+ $('extractBtn').disabled=true;$('ocrBtn').disabled=true;
+ try{
+   status('PDF read ho raha hai...');
+   let texts=await loadPdf(file),found=[];
+   for(let i=0;i<texts.length;i++)found.push(...parseText(texts[i],i+1));
+   let useOCR=forceOCR||$('ocr').value==='yes'||(found.length===0&&$('ocr').value!=='no');
+   if(useOCR){
+     if(!window.Tesseract){throw new Error('OCR library load nahi hui. Internet connection check karke page reload karo.')}
+     status(`Text extraction se ${found.length} questions mile. ${found.length===0?'Ab OCR automatic start ho raha hai...':'OCR mode selected hai; scanned text bhi check ho raha hai...'}`);
+     let ocrFound=[];
+     for(let i=0;i<pages.length;i++){
+       status(`OCR page ${i+1}/${pages.length} process ho raha hai...`);
+       let result=await Tesseract.recognize(pages[i].toDataURL('image/png'),'eng');
+       ocrFound.push(...parseText(result.data.text,i+1));
+     }
+     if(ocrFound.length>found.length)found=ocrFound;
+   }
+   let allText=texts.join('\n\n'),amap=parseAnswerMap(allText);
+   questions=mergeQuestionFragments(found).map(q=>({...q,answer:q.answer||amap[q.number]||'',image:addImageCanvas(q.page)}));
+   if(!questions.length){
+     status('Abhi bhi questions detect nahi hue. Is PDF ka sample page ya original PDF bhejo; uske format ke hisaab se parser adjust karunga.','warn');
+     $('reviewPanel').classList.add('hidden');return;
+   }
+   renderReview();$('reviewPanel').classList.remove('hidden');
+   status(`${questions.length} possible questions mile. Accuracy Checker mein options aur answers verify karo.`);
+ }catch(e){console.error(e);status('PDF process nahi ho paya: '+e.message,'error')}
+ finally{$('extractBtn').disabled=false;$('ocrBtn').disabled=false}
+}
 function renderReview(){let verified=questions.filter(q=>q.verified).length,withAns=questions.filter(q=>q.answer).length;$('reviewStats').innerHTML=`<div class="stat">Detected<b>${questions.length}</b></div><div class="stat">With answer key<b>${withAns}</b></div><div class="stat">Need review<b>${questions.length-verified}</b></div>`;$('questionEditors').innerHTML='';questions.forEach((q,i)=>{let el=document.createElement('div');el.className='question';el.innerHTML=`<div class="qtop"><b>Question ${i+1} · PDF page ${q.page}</b><span class="tag ${q.answer?'':'bad'}">${q.answer?'Answer found':'Answer missing'}</span></div><div class="field"><label>Question text</label><textarea data-q="${i}" data-k="text">${esc(q.text)}</textarea></div>${q.image?`<img class="qimage" src="${q.image}" alt="Original PDF page ${q.page}">`:''}<div class="editorgrid">${['A','B','C','D'].map(k=>`<div class="field"><label>Option ${k}</label><input data-q="${i}" data-k="${k}" value="${esc(q.options[k]||'')}"></div>`).join('')}</div><div class="grid" style="margin-top:9px"><div class="field"><label>Correct answer</label><select data-q="${i}" data-k="answer"><option value="">Not provided / choose later</option>${['A','B','C','D'].map(k=>`<option ${q.answer===k?'selected':''}>${k}</option>`).join('')}</select></div><div class="field"><label>Verification</label><select data-q="${i}" data-k="verified"><option value="false" ${!q.verified?'selected':''}>Needs review</option><option value="true" ${q.verified?'selected':''}>Verified by me</option></select></div></div><label class="small"><input type="checkbox" data-q="${i}" data-k="include" ${q.include===false?'':'checked'}> Include in quiz</label>`;$('questionEditors').appendChild(el)});$('questionEditors').querySelectorAll('[data-q]').forEach(node=>node.addEventListener('change',()=>{let i=+node.dataset.q,k=node.dataset.k;if(k==='include')questions[i].include=node.checked;else if(k==='verified')questions[i][k]=node.value==='true';else if(k==='answer')questions[i][k]=node.value;else if(['A','B','C','D'].includes(k))questions[i].options[k]=node.value;else questions[i][k]=node.value}));$('questionEditors').querySelectorAll('textarea').forEach(node=>node.addEventListener('input',()=>questions[+node.dataset.q].text=node.value))}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 $('extractBtn').onclick=()=>doExtract(false);$('ocrBtn').onclick=()=>doExtract(true);$('selectAllBtn').onclick=()=>{questions.forEach(q=>{q.verified=true;q.include=true});renderReview()};$('exportBtn').onclick=()=>{let blob=new Blob([JSON.stringify(questions.map(({image,...q})=>q),null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='raushanpdfquiz-questions.json';a.click();URL.revokeObjectURL(a.href)};
