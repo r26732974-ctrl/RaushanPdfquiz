@@ -1,269 +1,373 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#111827">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#172554">
 <title>Bihar Board Study Library</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--ink:#111827;--muted:#64748b;--line:#e5e7eb;--paper:#fff;--bg:#f3f5fb;--blue:#2563eb;--purple:#7c3aed;--green:#059669}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink)}
-button,input{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:11px 15px;font-weight:700}
-.hidden{display:none!important}.muted{color:var(--muted)}.small{font-size:13px}.wrap{max-width:1050px;margin:auto;padding:16px}
-.auth{min-height:100vh;display:grid;place-items:center;padding:18px;background:linear-gradient(145deg,#f8fafc,#e5e7eb)}
-.auth-card{width:min(100%,420px);background:#fff;border:1px solid #d1d5db;border-radius:22px;padding:26px;box-shadow:0 18px 50px #11182712}
-.brandmark{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;margin:0 auto 12px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;font-size:28px;font-weight:900;border:4px solid #fbbf24;box-shadow:0 0 0 4px #dbeafe}
-h1,h2,h3,p{margin-top:0}.auth h1{text-align:center;font-size:23px;margin-bottom:5px}.auth .muted{text-align:center}
-.field{margin:14px 0}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}.field input{width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:11px;background:#fff;outline:none}.field input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2563eb18}
-.primary{background:var(--ink);color:#fff}.secondary{background:#eef2ff;color:#3730a3}.danger{background:#fee2e2;color:#991b1b}.full{width:100%}.auth-switch{display:flex;gap:8px;margin-top:14px}.auth-switch button{flex:1;background:#f1f5f9;color:#334155}.auth-switch button.active{background:#111827;color:#fff}
-header{background:#111827;color:#fff;position:sticky;top:0;z-index:5;box-shadow:0 5px 20px #0002}.top{max-width:1050px;margin:auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}.topbrand{display:flex;align-items:center;gap:10px;font-weight:850}.mini-logo{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#9333ea);border:2px solid #fbbf24;display:grid;place-items:center;font-weight:900}
-.top button{background:#374151;color:#fff;padding:9px 12px}
-.hero{border-radius:20px;padding:22px;color:white;background:linear-gradient(120deg,#2563eb,#7c3aed 65%,#db2777);margin:16px 0}
-.hero h1{font-size:24px;margin-bottom:5px}.hero p{margin:0;color:#f3e8ff}
-.section-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 0 12px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}
-.tile{padding:17px;border-radius:17px;color:#fff;min-height:112px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 8px 18px #11182712;text-align:left}
-.tile b{font-size:18px}.tile span{font-size:28px}.c1{background:linear-gradient(135deg,#2563eb,#06b6d4)}.c2{background:linear-gradient(135deg,#7c3aed,#c026d3)}.c3{background:linear-gradient(135deg,#059669,#84cc16)}.c4{background:linear-gradient(135deg,#ea580c,#f59e0b)}.c5{background:linear-gradient(135deg,#db2777,#f43f5e)}
-.panel{background:#fff;border:1px solid var(--line);border-radius:17px;padding:16px;margin:13px 0;box-shadow:0 5px 18px #0f172a08}
-.row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.crumb{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}.crumb button{background:#e0e7ff;color:#3730a3;padding:7px 10px}
-.item{display:flex;align-items:center;gap:12px;padding:13px 4px;border-bottom:1px solid #eef2f7}.item:last-child{border-bottom:0}.item-icon{width:42px;height:42px;border-radius:12px;background:#eef2ff;display:grid;place-items:center;font-size:21px}.item-main{flex:1;min-width:0}.item-main b{display:block;overflow-wrap:anywhere}.item-main small{color:var(--muted)}
-.item button{background:#eef2ff;color:#3730a3;padding:8px 11px}
-.admin{border:1px solid #c4b5fd;background:#faf5ff}.admin h3{color:#6d28d9}
-.notice{padding:11px 13px;border-radius:12px;background:#eff6ff;color:#1e40af;font-size:13px;margin:12px 0}.error{background:#fef2f2;color:#991b1b}.success{background:#ecfdf5;color:#065f46}
-.empty{text-align:center;padding:26px;color:var(--muted)}
-@media(max-width:520px){.wrap{padding:12px}.hero{padding:18px}.hero h1{font-size:21px}.topbrand{font-size:14px}.auth-card{padding:21px}}
+:root{--navy:#172554;--blue:#2563eb;--purple:#6d28d9;--ink:#172033;--muted:#64748b;--line:#e5eaf2;--bg:#f5f7fc;--white:#fff;--green:#0f9d75;--red:#dc2626}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+button,input,select{font:inherit}button{cursor:pointer;border:0}
+.hidden{display:none!important}.wrap{max-width:1120px;margin:auto;padding:18px}
+.auth-wrap{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 15% 15%,#dbeafe,transparent 34%),radial-gradient(circle at 90% 85%,#ede9fe,transparent 34%),#f8fafc}
+.auth-card{width:min(100%,430px);background:white;border:1px solid #e7eaf2;border-radius:24px;padding:28px;box-shadow:0 20px 60px #17255418}
+.brandmark{width:66px;height:66px;border-radius:20px;display:grid;place-items:center;color:#fff;font-size:25px;font-weight:900;background:linear-gradient(135deg,#2563eb,#7c3aed);box-shadow:0 8px 20px #4f46e544}
+h1,h2,h3,p{margin-top:0}.auth-card h1{font-size:24px;margin:16px 0 5px}.sub{color:var(--muted);font-size:14px;line-height:1.5}
+.tabs{display:flex;gap:8px;background:#f1f5f9;padding:5px;border-radius:12px;margin:20px 0}
+.tabs button{flex:1;padding:10px;border-radius:9px;background:transparent;color:#475569;font-weight:700}
+.tabs button.active{background:#fff;color:var(--navy);box-shadow:0 2px 8px #0f172a12}
+.field{display:block;margin:13px 0}.field span{display:block;font-size:13px;font-weight:700;margin-bottom:7px;color:#334155}
+input,select{width:100%;padding:13px 14px;border:1px solid #d8deea;border-radius:11px;background:#fff;outline:none;color:#172033}
+input:focus,select:focus{border-color:#6288f5;box-shadow:0 0 0 3px #2563eb18}
+.btn{padding:12px 16px;border-radius:11px;font-weight:750;transition:.15s}.btn:disabled{opacity:.55;cursor:wait}
+.primary{color:white;background:linear-gradient(100deg,#2563eb,#6d28d9)}.secondary{background:#eef2ff;color:#3730a3}.ghost{background:#f1f5f9;color:#334155}.danger{background:#fee2e2;color:#991b1b}
+.full{width:100%}.msg{padding:11px 12px;border-radius:10px;font-size:13px;margin:12px 0;line-height:1.45}.msg.error{background:#fef2f2;color:#991b1b}.msg.ok{background:#ecfdf5;color:#065f46}.msg.info{background:#eff6ff;color:#1e40af}
+.topbar{background:linear-gradient(110deg,#172554,#3730a3 60%,#6d28d9);color:white;padding:18px 0}
+.toprow{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:12px}.brand .brandmark{width:46px;height:46px;border-radius:14px;font-size:18px;background:#ffffff20;border:1px solid #ffffff40;box-shadow:none}
+.brand h1{font-size:18px;margin:0}.brand small{display:block;color:#dbeafe;font-size:11px;margin-top:3px}
+.userbar{display:flex;align-items:center;gap:10px}.userbar span{font-size:12px;color:#e0e7ff}
+.hero{margin:20px 0;padding:24px;border-radius:22px;color:white;background:linear-gradient(115deg,#1d4ed8,#6d28d9);box-shadow:0 14px 35px #4338ca26}
+.hero h2{font-size:25px;margin-bottom:7px}.hero p{margin:0;color:#e0e7ff;font-size:14px}
+.section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:22px 0 12px}.section-title h2{font-size:18px;margin:0}
+.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.class-card{padding:18px 10px;border:1px solid var(--line);border-radius:17px;background:white;text-align:center;box-shadow:0 5px 16px #0f172a08}
+.class-card strong{display:block;font-size:22px;color:#312e81}.class-card span{font-size:12px;color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.tile{padding:17px;border-radius:16px;background:white;border:1px solid var(--line);display:flex;align-items:center;gap:12px;text-align:left;color:var(--ink);font-weight:750}
+.tile .ico{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;font-size:21px;background:#eef2ff}
+.panel{background:white;border:1px solid var(--line);border-radius:17px;padding:17px;margin:14px 0}
+.panel h3{font-size:16px;margin-bottom:12px}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.breadcrumb{display:flex;flex-wrap:wrap;gap:7px;align-items:center;color:var(--muted);font-size:13px;margin:15px 0}
+.crumb{color:#3730a3;background:#eef2ff;border-radius:8px;padding:6px 9px;font-weight:700}
+.item-list{display:grid;gap:9px}
+.item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.item-main{min-width:0}.item-main strong{display:block;overflow-wrap:anywhere}.item-main small{color:var(--muted)}
+.item button{flex-shrink:0}
+.admin-tag{font-size:11px;background:#fef3c7;color:#92400e;padding:5px 8px;border-radius:20px;font-weight:800}
+.empty{padding:22px;text-align:center;color:var(--muted);border:1px dashed #cbd5e1;border-radius:13px;background:#fafcff}
+.modalform{display:grid;grid-template-columns:1fr auto;gap:8px}
+footer{text-align:center;color:#94a3b8;font-size:11px;padding:28px 10px}
+@media(max-width:700px){.wrap{padding:14px}.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.toprow{align-items:flex-start}.userbar{flex-direction:column;align-items:flex-end}.hero{padding:20px}.hero h2{font-size:21px}}
+@media(max-width:420px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tiles{grid-template-columns:1fr}.auth-card{padding:22px}.brand h1{font-size:15px}}
 </style>
-
-<style>
-:root{--bg:#f5f6fc;--ink:#17172b;--muted:#72758b}
-body{background:radial-gradient(ellipse at 10% 0%,#e9e7ff 0,transparent 34%),radial-gradient(ellipse at 95% 16%,#ffe8f0 0,transparent 27%),#f6f7fb;color:#17172b}
-header{background:rgba(18,19,42,.97);backdrop-filter:blur(14px);box-shadow:0 8px 28px #17172b20}
-.top{padding-top:13px;padding-bottom:13px}
-.mini-logo{width:46px;height:46px;background:linear-gradient(145deg,#1e40af,#7c3aed 65%,#db2777);box-shadow:0 4px 14px #7c3aed55}
-.topbrand{letter-spacing:.1px}
-.wrap{max-width:1100px;padding:20px 17px 34px}
-.premium-hero{position:relative;overflow:hidden;min-height:220px;padding:27px 25px 20px;border-radius:25px;background:linear-gradient(118deg,#111b45 0%,#342b79 52%,#8b3e9e 100%);box-shadow:0 18px 38px #332b7933}
-.premium-hero:before{content:"";position:absolute;width:220px;height:220px;border-radius:50%;right:-35px;top:-90px;border:1px solid #ffffff35;box-shadow:0 0 0 22px #ffffff0b,0 0 0 48px #ffffff08}
-.premium-hero:after{content:"✦";position:absolute;right:48px;top:56px;font-size:78px;color:#ffffff20}
-.hero-kicker{font-size:10px;font-weight:850;letter-spacing:2.3px;color:#e9d5ff;margin-bottom:14px}
-.premium-hero h1{position:relative;z-index:1;font-size:clamp(26px,5vw,38px);line-height:1.15;letter-spacing:-.8px;margin:0 0 10px;color:#fff}
-.premium-hero p{position:relative;z-index:1;color:#e9e7ff;font-size:14px;margin:0}
-.hero-bottom{position:relative;z-index:1;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;margin-top:25px;padding-top:13px;border-top:1px solid #ffffff2c;color:#eeeaff;font-size:11px;font-weight:650}
-.welcome-line{font-size:13px;color:#62647b;font-weight:650;margin:18px 3px 23px}
-.section-title{align-items:end;margin:22px 2px 14px}
-.section-title h2{font-size:23px;letter-spacing:-.5px;margin:5px 0 0;color:#17172b}
-.eyebrow{font-size:9px;font-weight:850;letter-spacing:1.8px;color:#7c3aed}
-.board-pill{font-size:10px;font-weight:800;letter-spacing:.4px;padding:8px 11px;border-radius:30px;background:#ede9fe;color:#5b21b6;white-space:nowrap}
-.premium-grid{grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:14px}
-.premium-grid .tile{position:relative;overflow:hidden;min-height:155px;padding:17px;border-radius:20px;text-align:left;border:1px solid #ffffff45;box-shadow:0 10px 24px #22234a16;transition:transform .18s,box-shadow .18s}
-.premium-grid .tile:after{content:"";position:absolute;width:100px;height:100px;border-radius:50%;right:-30px;top:-32px;background:#ffffff18}
-.premium-grid .tile:active{transform:scale(.98)}
-.premium-grid .tile span{font-size:30px;position:relative;z-index:1}
-.premium-grid .tile b{font-size:21px;position:relative;z-index:1}
-.premium-grid .tile small{font-size:11px;opacity:.9;position:relative;z-index:1}
-.c1{background:linear-gradient(145deg,#2456d8,#4285f4)}.c2{background:linear-gradient(145deg,#6936c9,#a855f7)}.c3{background:linear-gradient(145deg,#087e72,#16a88d)}.c4{background:linear-gradient(145deg,#d65b22,#f59e0b)}.c5{background:linear-gradient(145deg,#c02670,#f05288)}
-.home-note{display:flex;align-items:center;gap:13px;padding:15px 16px;margin:19px 0 5px;border:1px solid #e7e3fa;background:linear-gradient(110deg,#fff,#f5f2ff);border-radius:17px;box-shadow:0 6px 18px #332b7909}
-.home-note-icon{width:43px;height:43px;display:grid;place-items:center;border-radius:14px;background:#ede9fe;font-size:21px}
-.home-note b{display:block;font-size:13px;color:#292347}.home-note small{display:block;font-size:11px;color:#77758c;margin-top:3px}
-.panel{border-radius:19px;box-shadow:0 8px 25px #22234a0b}
-.auth{background:radial-gradient(ellipse at 20% 0%,#e9e7ff,transparent 40%),linear-gradient(145deg,#f8fafc,#e9eaf2)}
-.auth-card{border-radius:25px;box-shadow:0 20px 55px #11182716;border-color:#e6e7ef}
-@media(max-width:520px){.wrap{padding:14px 13px 28px}.premium-hero{min-height:205px;padding:23px 19px 17px;border-radius:21px}.premium-hero:after{right:27px;top:55px;font-size:62px}.hero-bottom{margin-top:21px}.premium-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.premium-grid .tile{min-height:139px;padding:14px;border-radius:17px}.section-title h2{font-size:21px}}
-</style>
-
 </head>
 <body>
-<section id="authView" class="auth">
+<section id="authView" class="auth-wrap">
  <div class="auth-card">
   <div class="brandmark">BB</div>
   <h1>Bihar Board Study Library</h1>
-  <p class="muted small">विद्या ददाति विनयम् · Class 8–12</p>
-  <div class="auth-switch"><button id="loginTab" class="active" type="button">Login</button><button id="signupTab" type="button">Create account</button></div>
-  <div id="nameField" class="field hidden"><label>पूरा नाम</label><input id="fullName" autocomplete="name" placeholder="अपना नाम लिखें"></div>
-  <div class="field"><label>Email</label><input id="email" type="email" autocomplete="email" placeholder="name@example.com"></div>
-  <div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Password"></div>
-  <button id="authButton" class="primary full" type="button">Login</button>
-  <div id="authMsg" class="notice hidden"></div>
-  <p class="muted small" style="margin:16px 0 0;text-align:center">अपना password किसी के साथ साझा न करें।</p>
+  <p class="sub">Class 8–12 के Notes, Books, PYQ और Question Bank एक जगह।</p>
+  <div class="tabs"><button id="loginTab" class="active" type="button">Login</button><button id="signupTab" type="button">Create account</button></div>
+  <div id="signupNameWrap" class="field hidden"><span>पूरा नाम</span><input id="fullName" autocomplete="name" placeholder="अपना नाम लिखें"></div>
+  <label class="field"><span>Email</span><input id="email" type="email" autocomplete="email" placeholder="Email address"></label>
+  <label class="field"><span>Password</span><input id="password" type="password" autocomplete="current-password" placeholder="Password"></label>
+  <button id="authButton" class="btn primary full" type="button">Login</button>
+  <div id="authMessage" aria-live="polite"></div>
+  <p class="sub" style="margin:15px 0 0;font-size:12px">यह अध्ययन सामग्री के लिए बनाया गया प्लेटफॉर्म है। अपना पासवर्ड किसी के साथ साझा न करें।</p>
  </div>
 </section>
-<div id="appView" class="hidden">
- <header><div class="top"><div class="topbrand"><div class="mini-logo">BB</div><div>Bihar Board<br><span style="font-weight:500;color:#cbd5e1;font-size:12px">Study Library</span></div></div><div class="row"><span id="userRole" class="small"></span><button id="logoutBtn">Logout</button></div></div></header>
+
+<section id="appView" class="hidden">
+ <header class="topbar"><div class="wrap toprow">
+  <div class="brand"><div class="brandmark">BB</div><div><h1>Bihar Board Study Library</h1><small>विद्या ददाति विनयम् · Class 8–12</small></div></div>
+  <div class="userbar"><span id="userLabel"></span><span id="roleLabel"></span><button id="logoutBtn" class="btn ghost" type="button">Logout</button></div>
+ </div></header>
  <main class="wrap">
-  <div class="hero premium-hero">
-   <div class="hero-kicker">BIHAR BOARD • LEARNING HUB</div>
-   <h1>हर Class की तैयारी,<br>एक ही जगह।</h1>
-   <p>Notes • Books • PYQ • Question Bank</p>
-   <div class="hero-bottom"><span>📚 Smart Study Library</span><span>✦ Learn • Practice • Grow</span></div>
+  <div class="hero"><h2>पढ़ाई अब एक ही जगह 📚</h2><p>अपनी कक्षा चुनें और Notes, Books, PYQ तथा Question Bank पढ़ें।</p></div>
+  <div id="adminPanel" class="panel hidden">
+   <div class="section-title"><h2>Admin Dashboard</h2><span class="admin-tag">ADMIN ACCESS</span></div>
+   <p class="sub">पहले कक्षा चुनें, फिर Subject → Book → Folder बनाएं। सामग्री PDF या image के रूप में upload करें।</p>
+   <div id="adminHint" class="msg info">Admin tools देखने के लिए कोई कक्षा चुनें।</div>
   </div>
-  <div id="hello" class="welcome-line"></div>
-  <section id="classSection">
-   <div class="section-title"><div><span class="eyebrow">YOUR LEARNING SPACE</span><h2>अपनी Class चुनें</h2></div><span class="board-pill">BSEB • बिहार बोर्ड</span></div>
-   <div id="classGrid" class="grid premium-grid"></div>
-   <div class="home-note"><div class="home-note-icon">🎯</div><div><b>आज से तैयारी को दें नई दिशा</b><small>अपनी Class चुनें और अपने study materials तक पहुँचें।</small></div></div>
-  </section>
-  <section id="librarySection" class="hidden">
-   <div class="row"><h2 id="libraryHeading">Study Library</h2><button id="backClasses" class="secondary">← Classes</button></div>
-   <div id="crumbs" class="crumb"></div>
-   <div id="contentList" class="panel"><div class="empty">Loading...</div></div>
-  </section>
-  <section id="adminPanel" class="panel admin hidden">
-   <h3>⚙️ Admin Dashboard</h3>
-   <p class="muted small">यहाँ से subjects, books, folders और study files manage करें।</p>
-   <div id="adminHint" class="notice">पहले कोई Class चुनें। फिर Subject/Book/Folder जोड़ें और PDF upload करें।</div>
-   <div class="grid">
-    <div class="field"><label>नया Subject</label><input id="newSubject" placeholder="जैसे Mathematics"><button id="addSubject" class="secondary full" style="margin-top:7px">Add Subject</button></div>
-    <div class="field"><label>नई Book</label><input id="newBook" placeholder="जैसे गणित भाग 1"><button id="addBook" class="secondary full" style="margin-top:7px">Add Book</button></div>
-    <div class="field"><label>नया Folder / Subfolder</label><input id="newFolder" placeholder="जैसे Chapter 1"><button id="addFolder" class="secondary full" style="margin-top:7px">Add Folder</button></div>
-    <div class="field"><label>PDF / Image Upload</label><input id="fileTitle" placeholder="Material का नाम" style="margin-bottom:7px"><input id="studyFile" type="file" accept=".pdf,image/*"><button id="uploadFile" class="primary full" style="margin-top:7px">Upload Material</button></div>
-   </div>
-   <div id="adminMsg" class="notice hidden"></div>
-  </section>
-  <div class="notice">यह शुरुआती connected version है। केवल Admin को upload controls दिखेंगे। Private storage की files login के बाद signed link से खुलेंगी।</div>
+  <div class="section-title"><h2>अपनी कक्षा चुनें</h2></div>
+  <div id="classGrid" class="grid"><div class="empty">कक्षाएं लोड हो रही हैं…</div></div>
+  <div id="libraryArea" class="hidden">
+   <div class="breadcrumb" id="breadcrumb"></div>
+   <div class="section-title"><h2 id="listHeading">Subjects</h2><button id="backBtn" class="btn ghost hidden" type="button">← Back</button></div>
+   <div id="adminActions" class="panel hidden"></div>
+   <div id="itemList" class="item-list"></div>
+  </div>
+  <footer>Bihar Board Study Library · अध्ययन के उद्देश्य से</footer>
  </main>
-</div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = "PASTE_YOUR_PROJECT_URL_HERE";
-const SUPABASE_ANON_KEY = "PASTE_YOUR_PUBLISHABLE_OR_ANON_KEY_HERE";
-let db = null, currentUser = null, profile = null, selectedClass = null, selectedSubject = null, selectedBook = null, selectedFolder = null, currentLevel = "classes";
-let signupMode = false;
+(() => {
+ 'use strict';
+ const SUPABASE_URL = "vzxpbgzgriyjpmmcaejs";
+ const SUPABASE_ANON_KEY = "sb_publishable_lvpy4LTNXzxZI-g4oTYicA_tWhbhhaz";
+ const BUCKET = "study-materials";
+ const $ = id => document.getElementById(id);
+ const authView = $('authView'), appView = $('appView');
+ let supabase = null, currentUser = null, isAdmin = false, authMode = 'login';
+ let selectedClass = null, selectedSubject = null, selectedBook = null, selectedFolder = null;
+ let stack = [];
 
-const $ = id => document.getElementById(id);
-function message(id, text, type="notice"){const el=$(id);el.textContent=text;el.className=type;el.classList.remove("hidden");}
-function clearMessage(id){$(id).classList.add("hidden");}
-function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-function configured(){return !SUPABASE_URL.includes("vzxpbgzgriyjpmmcaejs")&&!SUPABASE_ANON_KEY.includes("sb_publishable_lvpy4LTNXzxZI-g4oTYicA_tWhbhhaz");}
-function setMode(signup){signupMode=signup;$("loginTab").classList.toggle("active",!signup);$("signupTab").classList.toggle("active",signup);$("nameField").classList.toggle("hidden",!signup);$("authButton").textContent=signup?"Create account":"Login";clearMessage("authMsg");}
-$("loginTab").onclick=()=>setMode(false);$("signupTab").onclick=()=>setMode(true);
+ function showMessage(target, text, type='info') {
+   target.innerHTML = '';
+   const div = document.createElement('div');
+   div.className = 'msg ' + type;
+   div.textContent = text;
+   target.appendChild(div);
+ }
+ function clearMessage(target){ target.innerHTML=''; }
+ function escapeText(value){ return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+ function configReady(){
+   return SUPABASE_URL.startsWith('https://') &&
+     !SUPABASE_URL.includes('PASTE_') &&
+     SUPABASE_ANON_KEY.length > 20 &&
+     !SUPABASE_ANON_KEY.includes('PASTE_');
+ }
+ function setMode(mode){
+   authMode=mode;
+   $('loginTab').classList.toggle('active',mode==='login');
+   $('signupTab').classList.toggle('active',mode==='signup');
+   $('signupNameWrap').classList.toggle('hidden',mode!=='signup');
+   $('authButton').textContent=mode==='login'?'Login':'Create account';
+   $('password').autocomplete=mode==='login'?'current-password':'new-password';
+   clearMessage($('authMessage'));
+ }
+ $('loginTab').addEventListener('click',()=>setMode('login'));
+ $('signupTab').addEventListener('click',()=>setMode('signup'));
 
-async function start(){
- if(!configured()){message("authMsg","पहले code में SUPABASE_URL और SUPABASE_ANON_KEY की जगह अपनी Project URL और Publishable/anon key paste करें। Service role/secret key कभी न डालें।");return;}
- db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
- const {data:{session}}=await db.auth.getSession();
- if(session) await enterApp(session.user);
- db.auth.onAuthStateChange(async(_event,session)=>{if(session) await enterApp(session.user);else showAuth();});
-}
-$("authButton").onclick=async()=>{
- if(!db){await start();if(!db)return;}
- const email=$("email").value.trim(),password=$("password").value;
- if(!email||!password){message("authMsg","Email और password भरें।","notice error");return;}
- $("authButton").disabled=true;
- try{
-  if(signupMode){
-   const fullName=$("fullName").value.trim();
-   if(!fullName){message("authMsg","अपना पूरा नाम लिखें।","notice error");return;}
-   const {data,error}=await db.auth.signUp({email,password,options:{data:{full_name:fullName}}});
-   if(error)throw error;
-   if(data.session) await enterApp(data.user); else message("authMsg","Account बन गया। Email confirmation माँगा गया हो तो inbox में जाकर confirm करें, फिर Login करें।","notice success");
-  }else{
-   const {data,error}=await db.auth.signInWithPassword({email,password});if(error)throw error;await enterApp(data.user);
-  }
- }catch(e){message("authMsg",e.message,"notice error");}
- finally{$("authButton").disabled=false;}
-};
-function showAuth(){$("appView").classList.add("hidden");$("authView").classList.remove("hidden");}
-async function enterApp(user){
- currentUser=user;
- const {data,error}=await db.from("profiles").select("full_name,role").eq("id",user.id).maybeSingle();
- if(error){showAuth();message("authMsg","Profile load नहीं हुआ: "+error.message,"notice error");return;}
- profile=data||{full_name:"",role:"student"};
- $("authView").classList.add("hidden");$("appView").classList.remove("hidden");
- $("hello").textContent="नमस्ते, "+(profile.full_name||user.email||"Student");
- $("userRole").textContent=profile.role==="admin"?"ADMIN":"STUDENT";
- $("adminPanel").classList.toggle("hidden",profile.role!=="admin");
- await loadClasses();
-}
-$("logoutBtn").onclick=async()=>{if(db)await db.auth.signOut();};
-async function loadClasses(){
- $("classSection").classList.remove("hidden");$("librarySection").classList.add("hidden");
- const {data,error}=await db.from("classes").select("id,class_number").order("class_number");
- if(error){$("classGrid").innerHTML='<div class="notice error">'+esc(error.message)+'</div>';return;}
- $("classGrid").innerHTML=(data||[]).map((c,i)=>`<button class="tile c${i%5+1}" data-class="${c.id}"><span>✦</span><b>Class ${c.class_number}</b><small>Explore study material&nbsp; ↗</small></button>`).join("");
- document.querySelectorAll("[data-class]").forEach(b=>b.onclick=()=>openClass(Number(b.dataset.class)));
-}
-async function openClass(id){
- const {data,error}=await db.from("classes").select("id,class_number").eq("id",id).single();if(error)return;
- selectedClass=data;selectedSubject=null;selectedBook=null;selectedFolder=null;currentLevel="subjects";
- $("classSection").classList.add("hidden");$("librarySection").classList.remove("hidden");await renderLevel();
-}
-$("backClasses").onclick=()=>loadClasses();
-function setCrumbs(){
- let a=[`<button data-crumb="classes">Classes</button>`];
- if(selectedClass)a.push(`<button data-crumb="subjects">Class ${selectedClass.class_number}</button>`);
- if(selectedSubject)a.push(`<button data-crumb="books">${esc(selectedSubject.name)}</button>`);
- if(selectedBook)a.push(`<button data-crumb="folders">${esc(selectedBook.title)}</button>`);
- document.querySelectorAll("[data-crumb]").forEach(x=>x.remove());
- $("crumbs").innerHTML=a.join("");
- $("crumbs").querySelectorAll("button").forEach(b=>b.onclick=async()=>{const v=b.dataset.crumb;if(v==="classes"){loadClasses();return;}if(v==="subjects"){selectedSubject=null;selectedBook=null;selectedFolder=null;currentLevel="subjects";}if(v==="books"){selectedBook=null;selectedFolder=null;currentLevel="books";}if(v==="folders"){selectedFolder=null;currentLevel="folders";}await renderLevel();});
-}
-async function renderLevel(){
- setCrumbs();const box=$("contentList");box.innerHTML='<div class="empty">Loading...</div>';
- $("libraryHeading").textContent=currentLevel==="subjects"?"Subjects":currentLevel==="books"?"Books":currentLevel==="folders"?"Folders & Chapters":"Study Materials";
- let rows=[],error=null,table="",icon="",label="",idkey="";
- if(currentLevel==="subjects"){table="subjects";icon="📚";label="name";idkey="id";({data:rows,error}=await db.from(table).select("*").eq("class_id",selectedClass.id).order("name"));}
- else if(currentLevel==="books"){table="books";icon="📖";label="title";idkey="id";({data:rows,error}=await db.from(table).select("*").eq("subject_id",selectedSubject.id).order("title"));}
- else if(currentLevel==="folders"){table="folders";icon="📁";label="name";idkey="id";let q=db.from(table).select("*").eq("book_id",selectedBook.id);q=selectedFolder?q.eq("parent_id",selectedFolder.id):q.is("parent_id",null);({data:rows,error}=await q.order("name"));}
- else {table="materials";icon="📄";label="title";idkey="id";({data:rows,error}=await db.from(table).select("*").eq("folder_id",selectedFolder.id).order("created_at",{ascending:false}));}
- if(error){box.innerHTML='<div class="notice error">'+esc(error.message)+'</div>';return;}
- if(!rows||!rows.length){box.innerHTML='<div class="empty">अभी यहाँ कोई सामग्री नहीं है। Admin जल्द ही सामग्री जोड़ सकता है।</div>';return;}
- box.innerHTML=rows.map(r=>`<div class="item"><div class="item-icon">${icon}</div><div class="item-main"><b>${esc(r[label])}</b><small>${currentLevel==="materials"?(r.file_type||"file").toUpperCase():"Open to explore"}</small></div><button data-open="${r[idkey]}">${currentLevel==="materials"?"Open":"Open →"}</button></div>`).join("");
- box.querySelectorAll("[data-open]").forEach((b,i)=>b.onclick=async()=>{
-  const r=rows[i];
-  if(currentLevel==="subjects"){selectedSubject=r;currentLevel="books";}
-  else if(currentLevel==="books"){selectedBook=r;selectedFolder=null;currentLevel="folders";}
-  else if(currentLevel==="folders"){selectedFolder=r;currentLevel="materials";}
-  else {await openMaterial(r);return;}
-  await renderLevel();
+ function initSupabase(){
+   if(!window.supabase || !window.supabase.createClient){
+     showMessage($('authMessage'),'Supabase library load नहीं हुई। Internet चालू करके page refresh करें।','error'); return false;
+   }
+   if(!configReady()){
+     showMessage($('authMessage'),'Supabase URL या Publishable key अभी placeholder है। HTML में दोनों values सही डालकर दोबारा upload करें।','error'); return false;
+   }
+   try{
+     supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+     return true;
+   }catch(err){
+     showMessage($('authMessage'),'Supabase setup error: '+err.message,'error'); return false;
+   }
+ }
+ async function handleAuth(){
+   clearMessage($('authMessage'));
+   if(!supabase && !initSupabase()) return;
+   const email=$('email').value.trim(), password=$('password').value;
+   if(!email || !password){ showMessage($('authMessage'),'Email और password दोनों भरें।','error'); return; }
+   if(password.length<6){ showMessage($('authMessage'),'Password कम-से-कम 6 characters का होना चाहिए।','error'); return; }
+   const btn=$('authButton'); btn.disabled=true; btn.textContent='Please wait…';
+   try{
+     if(authMode==='login'){
+       const {data,error}=await supabase.auth.signInWithPassword({email,password});
+       if(error) throw error;
+       if(data.user) await enterApp(data.user);
+     }else{
+       const fullName=$('fullName').value.trim();
+       if(!fullName){ throw new Error('अपना पूरा नाम लिखें।'); }
+       const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:fullName}}});
+       if(error) throw error;
+       if(data.session && data.user){ await enterApp(data.user); }
+       else showMessage($('authMessage'),'Account request सफल हुई। Email confirmation की जरूरत हो सकती है; अपने email में Supabase का confirmation link देखें।','ok');
+     }
+   }catch(err){
+     showMessage($('authMessage'),friendlyError(err),'error');
+   }finally{
+     btn.disabled=false; btn.textContent=authMode==='login'?'Login':'Create account';
+   }
+ }
+ function friendlyError(err){
+   const m=String(err?.message||err||'Unknown error');
+   if(/invalid login credentials/i.test(m)) return 'Email या password सही नहीं है। Supabase में बनाया हुआ वही Admin email/password इस्तेमाल करें।';
+   if(/email not confirmed/i.test(m)) return 'Email अभी confirm नहीं हुआ है। अपने email में confirmation link खोलें।';
+   if(/failed to fetch|network/i.test(m)) return 'Internet या Supabase URL connection में समस्या है।';
+   return m;
+ }
+ $('authButton').addEventListener('click',handleAuth);
+ $('password').addEventListener('keydown',e=>{if(e.key==='Enter')handleAuth();});
+ $('email').addEventListener('keydown',e=>{if(e.key==='Enter')handleAuth();});
+
+ async function enterApp(user){
+   currentUser=user;
+   const {data:profile,error}=await supabase.from('profiles').select('full_name,role').eq('id',user.id).maybeSingle();
+   if(error) throw error;
+   if(!profile) throw new Error('Profile नहीं मिला। Supabase signup trigger और profiles table check करें।');
+   isAdmin=profile.role==='admin';
+   $('userLabel').textContent=profile.full_name || user.email || 'Student';
+   $('roleLabel').textContent=isAdmin?'Admin':'Student';
+   $('adminPanel').classList.toggle('hidden',!isAdmin);
+   authView.classList.add('hidden'); appView.classList.remove('hidden');
+   await loadClasses();
+ }
+ async function loadClasses(){
+   const grid=$('classGrid'); grid.innerHTML='<div class="empty">कक्षाएं लोड हो रही हैं…</div>';
+   const {data,error}=await supabase.from('classes').select('id,class_number').order('class_number');
+   if(error){grid.innerHTML='';showMessage(grid,'Classes load नहीं हुईं: '+error.message,'error');return;}
+   grid.innerHTML='';
+   (data||[]).forEach(row=>{
+     const b=document.createElement('button'); b.type='button'; b.className='class-card';
+     b.innerHTML='<strong>Class '+escapeText(row.class_number)+'</strong><span>Bihar Board</span>';
+     b.addEventListener('click',()=>openClass(row)); grid.appendChild(b);
+   });
+   if(!data?.length) grid.innerHTML='<div class="empty">अभी कोई class उपलब्ध नहीं है।</div>';
+ }
+ function resetSelection(){selectedSubject=null;selectedBook=null;selectedFolder=null;stack=[];}
+ async function openClass(row){
+   selectedClass=row; resetSelection(); $('libraryArea').classList.remove('hidden');
+   await showSubjects();
+   $('libraryArea').scrollIntoView({behavior:'smooth',block:'start'});
+ }
+ function setBreadcrumb(){
+   const bits=[`Class ${selectedClass?.class_number||''}`];
+   if(selectedSubject) bits.push(selectedSubject.name);
+   if(selectedBook) bits.push(selectedBook.title);
+   if(selectedFolder) bits.push(selectedFolder.name);
+   $('breadcrumb').innerHTML=bits.map((x,i)=>`<span class="crumb">${escapeText(x)}</span>${i<bits.length-1?'<span>›</span>':''}`).join('');
+ }
+ function setAdminForm(html){
+   const box=$('adminActions');
+   box.classList.toggle('hidden',!isAdmin);
+   box.innerHTML=isAdmin?html:'';
+ }
+ function addForm(label,placeholder,buttonText,callback){
+   const wrap=document.createElement('div'); wrap.className='modalform';
+   const input=document.createElement('input'); input.placeholder=placeholder; input.setAttribute('aria-label',label);
+   const button=document.createElement('button'); button.className='btn primary'; button.type='button'; button.textContent=buttonText;
+   button.addEventListener('click',async()=>{
+     const value=input.value.trim(); if(!value){input.focus();return;}
+     button.disabled=true;
+     try{await callback(value);input.value='';}
+     catch(e){alert(friendlyError(e));}
+     finally{button.disabled=false;}
+   });
+   wrap.append(input,button); return wrap;
+ }
+ async function showSubjects(){
+   selectedBook=null;selectedFolder=null;setBreadcrumb();$('listHeading').textContent='Subjects';
+   $('backBtn').classList.add('hidden');
+   setAdminForm('');
+   if(isAdmin){
+     const f=addForm('Subject name','नया Subject नाम','Add Subject',async name=>{
+       const {error}=await supabase.from('subjects').insert({class_id:selectedClass.id,name});
+       if(error)throw error; await showSubjects();
+     });
+     $('adminActions').appendChild(f);
+   }
+   const {data,error}=await supabase.from('subjects').select('id,name').eq('class_id',selectedClass.id).order('name');
+   renderList(data,error,'subject');
+ }
+ async function showBooks(subject){
+   selectedSubject=subject;selectedBook=null;selectedFolder=null;setBreadcrumb();$('listHeading').textContent='Books';
+   $('backBtn').classList.remove('hidden');$('backBtn').onclick=showSubjects;
+   setAdminForm('');
+   if(isAdmin){
+     $('adminActions').appendChild(addForm('Book title','नई Book का नाम','Add Book',async title=>{
+       const {error}=await supabase.from('books').insert({subject_id:subject.id,title});
+       if(error)throw error; await showBooks(subject);
+     }));
+   }
+   const {data,error}=await supabase.from('books').select('id,title').eq('subject_id',subject.id).order('title');
+   renderList(data,error,'book');
+ }
+ async function showFolders(book){
+   selectedBook=book;selectedFolder=null;setBreadcrumb();$('listHeading').textContent='Folders';
+   $('backBtn').classList.remove('hidden');$('backBtn').onclick=()=>showBooks(selectedSubject);
+   setAdminForm('');
+   if(isAdmin){
+     $('adminActions').appendChild(addForm('Folder name','नया Folder नाम','Add Folder',async name=>{
+       const {error}=await supabase.from('folders').insert({book_id:book.id,parent_id:null,name});
+       if(error)throw error; await showFolders(book);
+     }));
+   }
+   const {data,error}=await supabase.from('folders').select('id,name').eq('book_id',book.id).is('parent_id',null).order('name');
+   renderList(data,error,'folder');
+ }
+ async function showSubfolders(folder){
+   selectedFolder=folder;setBreadcrumb();$('listHeading').textContent='Folders & Materials';
+   $('backBtn').classList.remove('hidden');$('backBtn').onclick=()=>showFolders(selectedBook);
+   setAdminForm('');
+   if(isAdmin){
+     $('adminActions').appendChild(addForm('Subfolder name','नया Subfolder नाम','Add Folder',async name=>{
+       const {error}=await supabase.from('folders').insert({book_id:selectedBook.id,parent_id:folder.id,name});
+       if(error)throw error; await showSubfolders(folder);
+     }));
+     const upload=document.createElement('div');upload.style.marginTop='12px';
+     upload.innerHTML='<label class="field"><span>PDF / Image upload</span><input id="materialFile" type="file" accept=".pdf,image/*"></label><label class="field"><span>Material title</span><input id="materialTitle" placeholder="जैसे Chapter 1 Notes"></label><button id="uploadBtn" class="btn secondary" type="button">Upload Material</button>';
+     $('adminActions').appendChild(upload);
+     $('uploadBtn').addEventListener('click',uploadMaterial);
+   }
+   const list=$('itemList');list.innerHTML='<div class="empty">लोड हो रहा है…</div>';
+   const [foldersRes,materialsRes]=await Promise.all([
+     supabase.from('folders').select('id,name').eq('book_id',selectedBook.id).eq('parent_id',folder.id).order('name'),
+     supabase.from('materials').select('id,title,file_path,file_type,created_at').eq('folder_id',folder.id).order('created_at',{ascending:false})
+   ]);
+   list.innerHTML='';
+   if(foldersRes.error){showMessage(list,'Folders load नहीं हुए: '+foldersRes.error.message,'error');return;}
+   if(materialsRes.error){showMessage(list,'Materials load नहीं हुए: '+materialsRes.error.message,'error');return;}
+   (foldersRes.data||[]).forEach(x=>addItem(list,'📁',x.name,'Open folder',()=>showSubfolders(x)));
+   (materialsRes.data||[]).forEach(x=>addItem(list,x.file_type==='pdf'?'📕':'🖼️',x.title,(x.file_type||'file').toUpperCase(),()=>openMaterial(x)));
+   if(!foldersRes.data?.length&&!materialsRes.data?.length)list.innerHTML='<div class="empty">इस folder में अभी सामग्री नहीं है।</div>';
+ }
+ function addItem(list,icon,title,tag,action){
+   const row=document.createElement('div');row.className='item';
+   const main=document.createElement('div');main.className='item-main';
+   main.innerHTML=`<strong>${icon} ${escapeText(title)}</strong><small>${escapeText(tag)}</small>`;
+   const btn=document.createElement('button');btn.className='btn secondary';btn.type='button';btn.textContent='Open';btn.addEventListener('click',action);
+   row.append(main,btn);list.appendChild(row);
+ }
+ function renderList(data,error,type){
+   const list=$('itemList');list.innerHTML='';
+   if(error){showMessage(list,'Data load नहीं हुआ: '+error.message,'error');return;}
+   if(!data?.length){list.innerHTML='<div class="empty">अभी यहाँ कोई सामग्री नहीं है।</div>';return;}
+   data.forEach(row=>{
+     const name=type==='book'?row.title:row.name;
+     addItem(list,type==='subject'?'📘':type==='book'?'📚':'📁',name,'Open',()=>{
+       if(type==='subject')showBooks(row); else if(type==='book')showFolders(row); else showSubfolders(row);
+     });
+   });
+ }
+ async function uploadMaterial(){
+   const file=$('materialFile')?.files?.[0], title=$('materialTitle')?.value.trim();
+   if(!file){alert('पहले PDF या image चुनें।');return;}
+   if(!title){alert('Material का title लिखें।');return;}
+   const btn=$('uploadBtn');btn.disabled=true;btn.textContent='Uploading…';
+   try{
+     const ext=(file.name.split('.').pop()||'file').toLowerCase();
+     const safeName=crypto.randomUUID()+'.'+ext;
+     const path=`class-${selectedClass.class_number}/book-${selectedBook.id}/folder-${selectedFolder.id}/${safeName}`;
+     const {error:uploadError}=await supabase.storage.from(BUCKET).upload(path,file,{contentType:file.type||undefined,upsert:false});
+     if(uploadError)throw uploadError;
+     const fileType=file.type==='application/pdf'||ext==='pdf'?'pdf':'image';
+     const {error:insertError}=await supabase.from('materials').insert({folder_id:selectedFolder.id,title,file_path:path,file_type:fileType,created_by:currentUser.id});
+     if(insertError){
+       await supabase.storage.from(BUCKET).remove([path]);
+       throw insertError;
+     }
+     alert('Material upload हो गया।');await showSubfolders(selectedFolder);
+   }catch(e){alert('Upload error: '+friendlyError(e));}
+   finally{btn.disabled=false;btn.textContent='Upload Material';}
+ }
+ async function openMaterial(item){
+   const {data,error}=await supabase.storage.from(BUCKET).createSignedUrl(item.file_path,3600);
+   if(error){alert('File open नहीं हुई: '+error.message);return;}
+   window.open(data.signedUrl,'_blank','noopener');
+ }
+ $('logoutBtn').addEventListener('click',async()=>{
+   if(supabase) await supabase.auth.signOut();
+   currentUser=null;isAdmin=false;appView.classList.add('hidden');authView.classList.remove('hidden');setMode('login');
  });
-}
-async function openMaterial(m){
- const {data,error}=await db.storage.from("study-materials").createSignedUrl(m.file_path,300);
- if(error){message("adminMsg","File link नहीं बना: "+error.message,"notice error");return;}
- window.open(data.signedUrl,"_blank","noopener");
-}
-function adminReady(){if(profile?.role!=="admin"){message("adminMsg","यह सुविधा केवल Admin के लिए है।","notice error");return false;}return true;}
-$("addSubject").onclick=async()=>{
- if(!adminReady()||!selectedClass)return message("adminMsg","पहले Class चुनें।","notice error");
- const name=$("newSubject").value.trim();if(!name)return;
- const {error}=await db.from("subjects").insert({class_id:selectedClass.id,name});
- if(error)message("adminMsg",error.message,"notice error");else{$("newSubject").value="";message("adminMsg","Subject जोड़ दिया गया।","notice success");if(currentLevel==="subjects")await renderLevel();}
-};
-$("addBook").onclick=async()=>{
- if(!adminReady()||!selectedSubject)return message("adminMsg","पहले Class और Subject चुनें।","notice error");
- const title=$("newBook").value.trim();if(!title)return;
- const {error}=await db.from("books").insert({subject_id:selectedSubject.id,title});
- if(error)message("adminMsg",error.message,"notice error");else{$("newBook").value="";message("adminMsg","Book जोड़ दी गई।","notice success");if(currentLevel==="books")await renderLevel();}
-};
-$("addFolder").onclick=async()=>{
- if(!adminReady()||!selectedBook)return message("adminMsg","पहले Class, Subject और Book चुनें।","notice error");
- const name=$("newFolder").value.trim();if(!name)return;
- const payload={book_id:selectedBook.id,parent_id:selectedFolder?.id||null,name};
- const {error}=await db.from("folders").insert(payload);
- if(error)message("adminMsg",error.message,"notice error");else{$("newFolder").value="";message("adminMsg","Folder जोड़ दिया गया।","notice success");if(currentLevel==="folders")await renderLevel();}
-};
-$("uploadFile").onclick=async()=>{
- if(!adminReady()||!selectedFolder)return message("adminMsg","PDF upload करने से पहले कोई Folder खोलें।","notice error");
- const file=$("studyFile").files[0],title=$("fileTitle").value.trim()||file?.name;
- if(!file)return message("adminMsg","पहले PDF या Image चुनें।","notice error");
- const isPdf=file.type==="application/pdf",isImage=file.type.startsWith("image/");
- if(!isPdf&&!isImage)return message("adminMsg","केवल PDF या Image upload करें।","notice error");
- if(file.size>50*1024*1024)return message("adminMsg","यह file 50 MB से बड़ी है। Free plan की सीमा और project limits जाँचें।","notice error");
- const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
- const path=`${selectedBook.id}/${selectedFolder.id}/${Date.now()}_${safeName}`;
- $("uploadFile").disabled=true;message("adminMsg","Upload हो रहा है...");
- try{
-  const {error:upErr}=await db.storage.from("study-materials").upload(path,file,{upsert:false,contentType:file.type});
-  if(upErr)throw upErr;
-  const {error:dbErr}=await db.from("materials").insert({folder_id:selectedFolder.id,title,file_path:path,file_type:isPdf?"pdf":"image",created_by:currentUser.id});
-  if(dbErr){await db.storage.from("study-materials").remove([path]);throw dbErr;}
-  $("studyFile").value="";$("fileTitle").value="";message("adminMsg","Material सफलतापूर्वक upload हो गया।","notice success");
-  if(currentLevel==="materials")await renderLevel();
- }catch(e){message("adminMsg",e.message,"notice error");}
- finally{$("uploadFile").disabled=false;}
-};
-start();
+ $('backBtn').addEventListener('click',showSubjects);
+
+ async function start(){
+   if(!initSupabase())return;
+   try{
+     const {data:{session},error}=await supabase.auth.getSession();
+     if(error)throw error;
+     if(session?.user) await enterApp(session.user);
+     supabase.auth.onAuthStateChange((event,session)=>{
+       if(event==='SIGNED_OUT'){appView.classList.add('hidden');authView.classList.remove('hidden');}
+     });
+   }catch(err){showMessage($('authMessage'),friendlyError(err),'error');}
+ }
+ start();
+})();
 </script>
 </body>
 </html>
