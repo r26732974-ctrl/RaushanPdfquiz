@@ -1,190 +1,269 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RaushanPdfquiz</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script><script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#111827">
+<title>Bihar Board Study Library</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--g:#137a50;--p:#e8f5ee;--ink:#17231d;--muted:#65736b;--line:#dce7df;--bg:#f4f8f5}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,sans-serif}header{background:linear-gradient(120deg,#126b47,#199765);color:white;padding:20px 16px}header .wrap,main{max-width:1050px;margin:auto}.wrap{padding:0 14px}h1{font-size:24px;margin:0}header p{margin:6px 0 0;font-size:13px}main{padding:16px 12px 45px}.panel{background:#fff;border:1px solid var(--line);border-radius:15px;padding:15px;margin-bottom:14px;box-shadow:0 3px 14px #173d260d}.panel h2{font-size:18px;margin:0 0 12px}.field label{display:block;font-size:13px;font-weight:bold;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;padding:11px;border:1px solid #cbd8cf;border-radius:9px;font:inherit;background:white;color:var(--ink)}.field textarea{min-height:75px;resize:vertical}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}.btn{border:0;border-radius:9px;padding:11px 14px;font-weight:bold;cursor:pointer;background:var(--g);color:white}.btn.secondary{background:#eaf2ed;color:#155b3e;border:1px solid #c9dfd1}.btn.danger{background:#a93226}.btn:disabled{opacity:.5}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.muted{color:var(--muted);font-size:13px;line-height:1.5}.status{padding:10px 12px;border-radius:9px;background:#edf5ef;margin-top:10px;font-size:13px;white-space:pre-wrap}.hidden{display:none!important}.stats{display:flex;gap:8px;flex-wrap:wrap}.stat{background:#f0f6f2;padding:9px 12px;border-radius:9px;font-size:13px}.stat b{display:block;font-size:18px}.tag{font-size:11px;padding:5px 8px;border-radius:20px;background:#edf5ef;color:#286344;font-weight:bold}.tag.bad{background:#fff1df;color:#855400}.preview-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.preview-card{border:1px solid var(--line);border-radius:13px;padding:12px;margin-top:12px}.crop-wrap{width:100%;max-height:65vh;overflow:auto;background:#f7faf8;border:1px solid var(--line);border-radius:10px;padding:8px;touch-action:pan-x pan-y}.crop-wrap img{display:block;width:100%;height:auto;max-height:none;object-fit:contain}.options{display:grid;grid-template-columns:1fr;gap:9px;margin-top:12px}.option{width:100%;text-align:left;padding:14px;border:1px solid var(--line);background:white;border-radius:10px;font-size:15px;line-height:1.4;cursor:pointer}.option.selected{border:2px solid var(--g);background:var(--p)}.editor{border-top:1px solid var(--line);margin-top:14px;padding-top:13px}.bank-card{border:1px solid var(--line);padding:12px;border-radius:10px;margin:9px 0;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.quiz-option{display:block;width:100%;text-align:left;padding:14px;margin:8px 0;border:1px solid var(--line);background:white;border-radius:10px;font-size:15px;cursor:pointer}.quiz-option.selected{border:2px solid var(--g);background:var(--p)}.bar{height:8px;background:#e7eee9;border-radius:9px;overflow:hidden;margin:10px 0}.bar span{display:block;height:100%;background:var(--g);width:0}.reviewrow{padding:10px;border-bottom:1px solid var(--line)}.navbtn{padding:7px 10px}.footer-note{text-align:center;color:var(--muted);font-size:12px;padding:12px}
-.screen-step{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 14px}.screen-step span{padding:8px 11px;border-radius:20px;background:#eaf2ed;color:#476456;font-size:12px;font-weight:bold}.screen-step span.active{background:var(--g);color:white}.screen-actions{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.time-note{font-size:12px;color:var(--muted);margin-top:8px}
-@media(min-width:760px){.preview-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.85fr);gap:16px;align-items:start}.options{margin-top:0}.crop-wrap{max-height:72vh}.preview-card{padding:16px}}
-@media(max-width:520px){h1{font-size:21px}main{padding:11px 9px 35px}.panel{padding:12px;border-radius:12px}.btn{min-height:43px}.option,.quiz-option{font-size:15px;padding:14px}.crop-wrap{max-height:62vh}.preview-head h2{font-size:17px}}
+:root{--ink:#111827;--muted:#64748b;--line:#e5e7eb;--paper:#fff;--bg:#f3f5fb;--blue:#2563eb;--purple:#7c3aed;--green:#059669}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink)}
+button,input{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:11px 15px;font-weight:700}
+.hidden{display:none!important}.muted{color:var(--muted)}.small{font-size:13px}.wrap{max-width:1050px;margin:auto;padding:16px}
+.auth{min-height:100vh;display:grid;place-items:center;padding:18px;background:linear-gradient(145deg,#f8fafc,#e5e7eb)}
+.auth-card{width:min(100%,420px);background:#fff;border:1px solid #d1d5db;border-radius:22px;padding:26px;box-shadow:0 18px 50px #11182712}
+.brandmark{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;margin:0 auto 12px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;font-size:28px;font-weight:900;border:4px solid #fbbf24;box-shadow:0 0 0 4px #dbeafe}
+h1,h2,h3,p{margin-top:0}.auth h1{text-align:center;font-size:23px;margin-bottom:5px}.auth .muted{text-align:center}
+.field{margin:14px 0}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}.field input{width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:11px;background:#fff;outline:none}.field input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2563eb18}
+.primary{background:var(--ink);color:#fff}.secondary{background:#eef2ff;color:#3730a3}.danger{background:#fee2e2;color:#991b1b}.full{width:100%}.auth-switch{display:flex;gap:8px;margin-top:14px}.auth-switch button{flex:1;background:#f1f5f9;color:#334155}.auth-switch button.active{background:#111827;color:#fff}
+header{background:#111827;color:#fff;position:sticky;top:0;z-index:5;box-shadow:0 5px 20px #0002}.top{max-width:1050px;margin:auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}.topbrand{display:flex;align-items:center;gap:10px;font-weight:850}.mini-logo{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#9333ea);border:2px solid #fbbf24;display:grid;place-items:center;font-weight:900}
+.top button{background:#374151;color:#fff;padding:9px 12px}
+.hero{border-radius:20px;padding:22px;color:white;background:linear-gradient(120deg,#2563eb,#7c3aed 65%,#db2777);margin:16px 0}
+.hero h1{font-size:24px;margin-bottom:5px}.hero p{margin:0;color:#f3e8ff}
+.section-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 0 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}
+.tile{padding:17px;border-radius:17px;color:#fff;min-height:112px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 8px 18px #11182712;text-align:left}
+.tile b{font-size:18px}.tile span{font-size:28px}.c1{background:linear-gradient(135deg,#2563eb,#06b6d4)}.c2{background:linear-gradient(135deg,#7c3aed,#c026d3)}.c3{background:linear-gradient(135deg,#059669,#84cc16)}.c4{background:linear-gradient(135deg,#ea580c,#f59e0b)}.c5{background:linear-gradient(135deg,#db2777,#f43f5e)}
+.panel{background:#fff;border:1px solid var(--line);border-radius:17px;padding:16px;margin:13px 0;box-shadow:0 5px 18px #0f172a08}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.crumb{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}.crumb button{background:#e0e7ff;color:#3730a3;padding:7px 10px}
+.item{display:flex;align-items:center;gap:12px;padding:13px 4px;border-bottom:1px solid #eef2f7}.item:last-child{border-bottom:0}.item-icon{width:42px;height:42px;border-radius:12px;background:#eef2ff;display:grid;place-items:center;font-size:21px}.item-main{flex:1;min-width:0}.item-main b{display:block;overflow-wrap:anywhere}.item-main small{color:var(--muted)}
+.item button{background:#eef2ff;color:#3730a3;padding:8px 11px}
+.admin{border:1px solid #c4b5fd;background:#faf5ff}.admin h3{color:#6d28d9}
+.notice{padding:11px 13px;border-radius:12px;background:#eff6ff;color:#1e40af;font-size:13px;margin:12px 0}.error{background:#fef2f2;color:#991b1b}.success{background:#ecfdf5;color:#065f46}
+.empty{text-align:center;padding:26px;color:var(--muted)}
+@media(max-width:520px){.wrap{padding:12px}.hero{padding:18px}.hero h1{font-size:21px}.topbrand{font-size:14px}.auth-card{padding:21px}}
+</style>
 
-/* TABLET + RESPONSIVE WIDTH FIX */
-html, body { width:100%; max-width:100%; overflow-x:hidden; }
-*, *::before, *::after { box-sizing:border-box; }
-main, header, section, .panel, .preview-card, .preview-layout, .preview-layout > div, .editor, .field, .grid, .stats, #quizQuestion, #navigation, .bank-card { min-width:0; max-width:100%; }
-img, canvas { max-width:100%; }
-.field input, .field select, .field textarea { min-width:0; max-width:100%; }
-.crop-wrap { width:100%; max-width:100%; }
-.crop-wrap img { display:block; width:100%; max-width:100%; height:auto; }
-.option, .quiz-option, .reviewrow, .bank-card { overflow-wrap:anywhere; }
-@media (min-width:600px) and (max-width:1024px) {
-  main { width:100%; padding:14px; }
-  .panel { padding:14px; overflow:hidden; }
-  .grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .preview-layout { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(220px,.85fr); gap:14px; }
-  .preview-layout > div { width:100%; min-width:0; }
-  .crop-wrap { max-height:55vh; overflow:auto; }
-  .options { display:grid; grid-template-columns:minmax(0,1fr); gap:10px; }
-  .option, .quiz-option { width:100%; min-width:0; font-size:15px; }
-  .bank-card { width:100%; }
-  .actions { flex-wrap:wrap; }
-  #navigation { display:grid; grid-template-columns:repeat(8,minmax(0,1fr)); gap:6px; }
-  #navigation button { min-width:0; padding:9px 3px; }
-}
-@media (max-width:599px) {
-  main { padding:10px; }
-  .grid, .preview-layout, .options { grid-template-columns:minmax(0,1fr); }
-  .panel { overflow:hidden; }
-  #navigation { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:5px; }
-}
+<style>
+:root{--bg:#f5f6fc;--ink:#17172b;--muted:#72758b}
+body{background:radial-gradient(ellipse at 10% 0%,#e9e7ff 0,transparent 34%),radial-gradient(ellipse at 95% 16%,#ffe8f0 0,transparent 27%),#f6f7fb;color:#17172b}
+header{background:rgba(18,19,42,.97);backdrop-filter:blur(14px);box-shadow:0 8px 28px #17172b20}
+.top{padding-top:13px;padding-bottom:13px}
+.mini-logo{width:46px;height:46px;background:linear-gradient(145deg,#1e40af,#7c3aed 65%,#db2777);box-shadow:0 4px 14px #7c3aed55}
+.topbrand{letter-spacing:.1px}
+.wrap{max-width:1100px;padding:20px 17px 34px}
+.premium-hero{position:relative;overflow:hidden;min-height:220px;padding:27px 25px 20px;border-radius:25px;background:linear-gradient(118deg,#111b45 0%,#342b79 52%,#8b3e9e 100%);box-shadow:0 18px 38px #332b7933}
+.premium-hero:before{content:"";position:absolute;width:220px;height:220px;border-radius:50%;right:-35px;top:-90px;border:1px solid #ffffff35;box-shadow:0 0 0 22px #ffffff0b,0 0 0 48px #ffffff08}
+.premium-hero:after{content:"✦";position:absolute;right:48px;top:56px;font-size:78px;color:#ffffff20}
+.hero-kicker{font-size:10px;font-weight:850;letter-spacing:2.3px;color:#e9d5ff;margin-bottom:14px}
+.premium-hero h1{position:relative;z-index:1;font-size:clamp(26px,5vw,38px);line-height:1.15;letter-spacing:-.8px;margin:0 0 10px;color:#fff}
+.premium-hero p{position:relative;z-index:1;color:#e9e7ff;font-size:14px;margin:0}
+.hero-bottom{position:relative;z-index:1;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;margin-top:25px;padding-top:13px;border-top:1px solid #ffffff2c;color:#eeeaff;font-size:11px;font-weight:650}
+.welcome-line{font-size:13px;color:#62647b;font-weight:650;margin:18px 3px 23px}
+.section-title{align-items:end;margin:22px 2px 14px}
+.section-title h2{font-size:23px;letter-spacing:-.5px;margin:5px 0 0;color:#17172b}
+.eyebrow{font-size:9px;font-weight:850;letter-spacing:1.8px;color:#7c3aed}
+.board-pill{font-size:10px;font-weight:800;letter-spacing:.4px;padding:8px 11px;border-radius:30px;background:#ede9fe;color:#5b21b6;white-space:nowrap}
+.premium-grid{grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:14px}
+.premium-grid .tile{position:relative;overflow:hidden;min-height:155px;padding:17px;border-radius:20px;text-align:left;border:1px solid #ffffff45;box-shadow:0 10px 24px #22234a16;transition:transform .18s,box-shadow .18s}
+.premium-grid .tile:after{content:"";position:absolute;width:100px;height:100px;border-radius:50%;right:-30px;top:-32px;background:#ffffff18}
+.premium-grid .tile:active{transform:scale(.98)}
+.premium-grid .tile span{font-size:30px;position:relative;z-index:1}
+.premium-grid .tile b{font-size:21px;position:relative;z-index:1}
+.premium-grid .tile small{font-size:11px;opacity:.9;position:relative;z-index:1}
+.c1{background:linear-gradient(145deg,#2456d8,#4285f4)}.c2{background:linear-gradient(145deg,#6936c9,#a855f7)}.c3{background:linear-gradient(145deg,#087e72,#16a88d)}.c4{background:linear-gradient(145deg,#d65b22,#f59e0b)}.c5{background:linear-gradient(145deg,#c02670,#f05288)}
+.home-note{display:flex;align-items:center;gap:13px;padding:15px 16px;margin:19px 0 5px;border:1px solid #e7e3fa;background:linear-gradient(110deg,#fff,#f5f2ff);border-radius:17px;box-shadow:0 6px 18px #332b7909}
+.home-note-icon{width:43px;height:43px;display:grid;place-items:center;border-radius:14px;background:#ede9fe;font-size:21px}
+.home-note b{display:block;font-size:13px;color:#292347}.home-note small{display:block;font-size:11px;color:#77758c;margin-top:3px}
+.panel{border-radius:19px;box-shadow:0 8px 25px #22234a0b}
+.auth{background:radial-gradient(ellipse at 20% 0%,#e9e7ff,transparent 40%),linear-gradient(145deg,#f8fafc,#e9eaf2)}
+.auth-card{border-radius:25px;box-shadow:0 20px 55px #11182716;border-color:#e6e7ef}
+@media(max-width:520px){.wrap{padding:14px 13px 28px}.premium-hero{min-height:205px;padding:23px 19px 17px;border-radius:21px}.premium-hero:after{right:27px;top:55px;font-size:62px}.hero-bottom{margin-top:21px}.premium-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.premium-grid .tile{min-height:139px;padding:14px;border-radius:17px}.section-title h2{font-size:21px}}
+</style>
 
-</style></head><body>
-<header><div class="wrap"><h1>📚 RaushanPdfquiz</h1><p>Save your question bank once · Take tests anytime · Answers hidden during test</p></div></header>
-<main>
-<div class="screen-step" id="stepBar"><span id="step1" class="active">1 · PDF Extraction</span><span id="step2">2 · Question Preview</span><span id="step3">3 · Test</span></div>
-<section class="panel" id="uploadPanel"><h2>1. Upload PDF / Create Question Bank</h2><div class="field"><label>PDF file</label><input id="pdfFile" type="file" accept="application/pdf"></div><p class="muted">PDF se questions detect honge. Preview mein question aur options check karke Question Bank save karo. Scanned PDFs ke liye OCR available hai.</p><div class="grid"><div class="field"><label>Questions per test</label><select id="count"><option value="50">50</option><option value="25">25</option><option value="10">10</option><option value="all">All available</option></select></div><div class="field"><label>Difficulty</label><select id="difficulty"><option>Medium</option><option>Easy</option><option>Hard</option><option>Mixed</option></select></div><div class="field"><label>Quiz timer (minutes)</label><input id="duration" type="number" min="1" max="600" value="60"></div><div class="field"><label>OCR mode</label><select id="ocr"><option value="auto">Auto (recommended)</option><option value="yes">Always run OCR</option><option value="no">Text extraction only</option></select></div><div class="field"><label>OCR language</label><select id="ocrLang"><option value="eng">English</option><option value="eng+hin">English + Hindi</option><option value="hin">Hindi</option></select></div></div><div class="actions"><button class="btn" id="extractBtn">Extract Questions</button><button class="btn secondary" id="ocrBtn">Run OCR on PDF</button></div><div id="uploadStatus" class="status">PDF select karke Extract Questions dabao.</div></section>
-<section class="panel" id="previewPanel" hidden><div class="preview-head"><h2>2. Question Bank Preview</h2><span class="tag" id="previewCount">0 Questions</span></div><div class="stats" id="previewStats"></div><div class="preview-card"><div class="preview-head"><b id="previewNumber">Question 1</b><span class="tag" id="answerTag">Answer status</span></div><div class="preview-layout"><div><p class="muted">Original cropped question image · Scroll to read long questions</p><div class="crop-wrap" id="cropWrap"><img id="previewImage" alt="Cropped original question"><div id="textFallback" class="muted hidden"></div></div></div><div><b>Options</b><div id="previewOptions" class="options"></div></div></div><div class="editor"><b>Edit / Verify this question</b><div class="field" style="margin-top:9px"><label>Question text (used if crop unavailable)</label><textarea id="editText"></textarea></div><div class="grid" style="margin-top:9px" id="editOptions"></div><div class="grid" style="margin-top:9px"><div class="field"><label>Correct answer</label><select id="editAnswer"><option value="">Not available / select later</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div><div class="field"><label>Verification</label><select id="editVerified"><option value="false">Needs review</option><option value="true">Verified by me</option></select></div></div><label class="muted"><input type="checkbox" id="editInclude" checked> Include in Question Bank</label><div class="actions"><button class="btn secondary" id="prevPreview">Previous</button><button class="btn secondary" id="nextPreview">Next Question</button></div></div></div><div class="actions"><button class="btn" id="startPreviewTestBtn">▶ Start Test</button><button class="btn secondary" id="saveBankBtn">Save Question Bank</button><button class="btn secondary" id="exportBtn">Export JSON backup</button></div><p class="muted">Start Test se isi preview ke included questions ka test shuru hoga. Bank save karna optional hai.</p></section>
-<section class="panel" id="libraryPanel"><h2>My Saved Question Banks</h2><p class="muted">Saved banks yahan rahenge. Kisi bank ko select karke dobara PDF upload kiye bina test de sakte ho.</p><div id="bankList" class="muted">Saved banks load ho rahe hain...</div><div id="libraryStatus" class="status">Question Bank save karne ke baad yahan dikhega.</div></section>
-<section class="panel hidden" id="quizPanel"><div class="preview-head"><h2>4. Quiz</h2><span class="tag" id="timer">60:00</span></div><div class="stats"><div class="stat">Total<b id="totalN">0</b></div><div class="stat">Attempted<b id="attemptN">0</b></div><div class="stat">Remaining<b id="remainN">0</b></div></div><div class="bar"><span id="progress"></span></div><div id="quizQuestion"></div><div class="actions"><button class="btn secondary" id="prevBtn">Previous</button><button class="btn secondary" id="skipBtn">Skip</button><button class="btn" id="nextBtn">Save & Next</button><button class="btn danger" id="submitBtn">Submit Quiz</button></div><div id="navigation" class="actions"></div></section>
-<section class="panel hidden" id="resultPanel"><h2>5. Performance Analysis</h2><div class="stats" id="resultStats"></div><div id="answerReview"></div><div class="actions"><button class="btn" id="newQuizBtn">Back to Question Banks</button></div></section>
-<section class="panel" id="historyPanel"><h2>Test History</h2><div id="historyList" class="muted">Abhi koi test history nahi hai.</div></section><div class="footer-note">Free browser-based version · Saved banks stay in this browser/device. Clearing browser site data can erase them.</div>
-</main>
+</head>
+<body>
+<section id="authView" class="auth">
+ <div class="auth-card">
+  <div class="brandmark">BB</div>
+  <h1>Bihar Board Study Library</h1>
+  <p class="muted small">विद्या ददाति विनयम् · Class 8–12</p>
+  <div class="auth-switch"><button id="loginTab" class="active" type="button">Login</button><button id="signupTab" type="button">Create account</button></div>
+  <div id="nameField" class="field hidden"><label>पूरा नाम</label><input id="fullName" autocomplete="name" placeholder="अपना नाम लिखें"></div>
+  <div class="field"><label>Email</label><input id="email" type="email" autocomplete="email" placeholder="name@example.com"></div>
+  <div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Password"></div>
+  <button id="authButton" class="primary full" type="button">Login</button>
+  <div id="authMsg" class="notice hidden"></div>
+  <p class="muted small" style="margin:16px 0 0;text-align:center">अपना password किसी के साथ साझा न करें।</p>
+ </div>
+</section>
+<div id="appView" class="hidden">
+ <header><div class="top"><div class="topbrand"><div class="mini-logo">BB</div><div>Bihar Board<br><span style="font-weight:500;color:#cbd5e1;font-size:12px">Study Library</span></div></div><div class="row"><span id="userRole" class="small"></span><button id="logoutBtn">Logout</button></div></div></header>
+ <main class="wrap">
+  <div class="hero premium-hero">
+   <div class="hero-kicker">BIHAR BOARD • LEARNING HUB</div>
+   <h1>हर Class की तैयारी,<br>एक ही जगह।</h1>
+   <p>Notes • Books • PYQ • Question Bank</p>
+   <div class="hero-bottom"><span>📚 Smart Study Library</span><span>✦ Learn • Practice • Grow</span></div>
+  </div>
+  <div id="hello" class="welcome-line"></div>
+  <section id="classSection">
+   <div class="section-title"><div><span class="eyebrow">YOUR LEARNING SPACE</span><h2>अपनी Class चुनें</h2></div><span class="board-pill">BSEB • बिहार बोर्ड</span></div>
+   <div id="classGrid" class="grid premium-grid"></div>
+   <div class="home-note"><div class="home-note-icon">🎯</div><div><b>आज से तैयारी को दें नई दिशा</b><small>अपनी Class चुनें और अपने study materials तक पहुँचें।</small></div></div>
+  </section>
+  <section id="librarySection" class="hidden">
+   <div class="row"><h2 id="libraryHeading">Study Library</h2><button id="backClasses" class="secondary">← Classes</button></div>
+   <div id="crumbs" class="crumb"></div>
+   <div id="contentList" class="panel"><div class="empty">Loading...</div></div>
+  </section>
+  <section id="adminPanel" class="panel admin hidden">
+   <h3>⚙️ Admin Dashboard</h3>
+   <p class="muted small">यहाँ से subjects, books, folders और study files manage करें।</p>
+   <div id="adminHint" class="notice">पहले कोई Class चुनें। फिर Subject/Book/Folder जोड़ें और PDF upload करें।</div>
+   <div class="grid">
+    <div class="field"><label>नया Subject</label><input id="newSubject" placeholder="जैसे Mathematics"><button id="addSubject" class="secondary full" style="margin-top:7px">Add Subject</button></div>
+    <div class="field"><label>नई Book</label><input id="newBook" placeholder="जैसे गणित भाग 1"><button id="addBook" class="secondary full" style="margin-top:7px">Add Book</button></div>
+    <div class="field"><label>नया Folder / Subfolder</label><input id="newFolder" placeholder="जैसे Chapter 1"><button id="addFolder" class="secondary full" style="margin-top:7px">Add Folder</button></div>
+    <div class="field"><label>PDF / Image Upload</label><input id="fileTitle" placeholder="Material का नाम" style="margin-bottom:7px"><input id="studyFile" type="file" accept=".pdf,image/*"><button id="uploadFile" class="primary full" style="margin-top:7px">Upload Material</button></div>
+   </div>
+   <div id="adminMsg" class="notice hidden"></div>
+  </section>
+  <div class="notice">यह शुरुआती connected version है। केवल Admin को upload controls दिखेंगे। Private storage की files login के बाद signed link से खुलेंगी।</div>
+ </main>
+</div>
 <script>
-if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-const $=id=>document.getElementById(id);let pdfDoc=null,pages=[],pageLines=[],questions=[],previewIndex=0,quiz=[],answers={},bookmarks=new Set(),current=0,timerId=null,seconds=3600,activeBankId=null,questionStartedAt=0,questionTimes=[];
-const DB='RaushanPdfquizDB',STORE='banks';function dbOpen(){return new Promise((ok,no)=>{let r=indexedDB.open(DB,1);r.onupgradeneeded=()=>r.result.createObjectStore(STORE,{keyPath:'id'});r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)})}async function dbAction(mode,fn){let d=await dbOpen();return new Promise((ok,no)=>{let t=d.transaction(STORE,mode),s=t.objectStore(STORE),r=fn(s);if(r){r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)}else{t.oncomplete=()=>ok();t.onerror=()=>no(t.error)}})}const dbPut=x=>dbAction('readwrite',s=>s.put(x)),dbAll=()=>dbAction('readonly',s=>s.getAll()),dbGet=id=>dbAction('readonly',s=>s.get(id)),dbDel=id=>dbAction('readwrite',s=>s.delete(id));
-function setStep(n){
- ['uploadPanel','previewPanel','quizPanel'].forEach((id,i)=>$(id).classList.toggle('hidden',i!==n-1));
- ['step1','step2','step3'].forEach((id,i)=>$(id).classList.toggle('active',i===n-1));
- if(n===1)$('uploadPanel').scrollIntoView({behavior:'smooth',block:'start'});
- if(n===2)$('previewPanel').scrollIntoView({behavior:'smooth',block:'start'});
- if(n===3)$('quizPanel').scrollIntoView({behavior:'smooth',block:'start'});
+const SUPABASE_URL = "PASTE_YOUR_PROJECT_URL_HERE";
+const SUPABASE_ANON_KEY = "PASTE_YOUR_PUBLISHABLE_OR_ANON_KEY_HERE";
+let db = null, currentUser = null, profile = null, selectedClass = null, selectedSubject = null, selectedBook = null, selectedFolder = null, currentLevel = "classes";
+let signupMode = false;
+
+const $ = id => document.getElementById(id);
+function message(id, text, type="notice"){const el=$(id);el.textContent=text;el.className=type;el.classList.remove("hidden");}
+function clearMessage(id){$(id).classList.add("hidden");}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function configured(){return !SUPABASE_URL.includes("vzxpbgzgriyjpmmcaejs")&&!SUPABASE_ANON_KEY.includes("sb_publishable_lvpy4LTNXzxZI-g4oTYicA_tWhbhhaz");}
+function setMode(signup){signupMode=signup;$("loginTab").classList.toggle("active",!signup);$("signupTab").classList.toggle("active",signup);$("nameField").classList.toggle("hidden",!signup);$("authButton").textContent=signup?"Create account":"Login";clearMessage("authMsg");}
+$("loginTab").onclick=()=>setMode(false);$("signupTab").onclick=()=>setMode(true);
+
+async function start(){
+ if(!configured()){message("authMsg","पहले code में SUPABASE_URL और SUPABASE_ANON_KEY की जगह अपनी Project URL और Publishable/anon key paste करें। Service role/secret key कभी न डालें।");return;}
+ db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+ const {data:{session}}=await db.auth.getSession();
+ if(session) await enterApp(session.user);
+ db.auth.onAuthStateChange(async(_event,session)=>{if(session) await enterApp(session.user);else showAuth();});
 }
-function recordQuestionTime(){
- if(!quiz.length||!questionStartedAt)return;
- questionTimes[current]=(questionTimes[current]||0)+Math.max(0,Math.floor((Date.now()-questionStartedAt)/1000));
- questionStartedAt=Date.now();
-}
-function fmtTime(sec){sec=Math.max(0,sec||0);return Math.floor(sec/60)+'m '+(sec%60)+'s'}
-function status(m){$('uploadStatus').textContent=m}function clean(s){return(s||'').replace(/\u00a0/g,' ').replace(/[\t ]+/g,' ').trim()}function norm(s){return clean(s).toLowerCase().replace(/[^a-z0-9]+/g,' ').trim()}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function parseAnswerMap(text){
- const map={},src=(text||'').replace(/\r/g,'\n');
- const keyStart=src.search(/(?:answer\s*key|answers?\s*key|answer\s*sheet|correct\s*answers?)/i);
- const region=keyStart>=0?src.slice(keyStart):src;
- // Handles 1-A, 1. A, Q1: B, 1)B, and compact answer grids such as 1 2 3 / A B C.
- let m,re=/(?:Q(?:uestion)?\s*)?(\d{1,3})\s*[.)\-:]?\s*(?:Ans(?:wer)?\s*)?[:.)\-]?\s*\(?([A-D])\)?\b/gi;
- while((m=re.exec(region))!==null){const n=+m[1];if(n>0&&n<300)map[n]=m[2].toUpperCase()}
- const lines=region.split('\n').map(clean);
- for(let i=0;i<lines.length;i++){
-  let nums=lines[i].match(/\b\d{1,3}\b/g),letters=lines[i+1]?.match(/\b[A-D]\b/gi);
-  if(nums&&letters&&nums.length>=3&&letters.length>=3&&nums.length===letters.length){nums.forEach((n,j)=>map[+n]=letters[j].toUpperCase());}
- }
- return map;
-}
-function parseText(text,page){
- const lines=(text||'').replace(/\r/g,'\n').split('\n').map(clean).filter(Boolean),out=[];
- let q=null,mode='question',pendingOption='';
- const flush=()=>{if(q){q.text=clean(q.text);for(const k of ['A','B','C','D'])q.options[k]=clean(q.options[k]);const n=Object.values(q.options).filter(Boolean).length;if(q.text&&n>=2){q.confidence=scoreQuestion(q);out.push(q)}}q=null;mode='question';pendingOption=''};
- const startQuestion=line=>{
-  let m=line.match(/^(?:question|ques(?:tion)?\.?|que\.?|q\.?)[\s#.:\-]*(\d{1,3})\s*[.):\]-]?\s*(.*)$/i);
-  if(m)return {number:+m[1],text:m[2]||''};
-  m=line.match(/^\(?([0-9]{1,3})\)?\s*[.)\-:]\s*(\S.*)$/);
-  if(m&&!/^(?:19|20)\d{2}$/.test(m[1]))return {number:+m[1],text:m[2]};
-  m=line.match(/^\(?([0-9]{1,3})\)?[.)]?$/);
-  if(m&&!/^(?:19|20)\d{2}$/.test(m[1]))return {number:+m[1],text:''};
-  return null;
- };
- const splitOptions=line=>{
-  // Accept A. / A) / (A) / A: / A- in inline or line-separated option layouts.
-  const re=/(?:^|\s{1,}|\|)\(?([A-D])\)?\s*[.)\]:\-]\s*/gi,marks=[];let m;
-  while((m=re.exec(line))!==null)marks.push({key:m[1].toUpperCase(),start:m.index+m[0].length,markStart:m.index});
-  if(marks.length>=2){
-   for(let i=0;i<marks.length;i++){const end=i+1<marks.length?marks[i+1].markStart:line.length;const v=clean(line.slice(marks[i].start,end));if(v)q.options[marks[i].key]=v}
-   mode='options';return true;
-  }
-  const one=line.match(/^\(?([A-D])\)?\s*[.)\]:\-]\s*(.*)$/i);
-  if(one){const k=one[1].toUpperCase(),v=clean(one[2]);q.options[k]=v;pendingOption=v? k:'';mode='options';return true}
-  return false;
- };
- for(let line of lines){
-  // Remove recurring page headers/footers, but retain question content and section labels.
-  if(/^(?:page\s+\d+|malviya academy|target\s*-\s*cuet|course\s*-)/i.test(line))continue;
-  const h=startQuestion(line);
-  if(h){flush();q={number:h.number,text:h.text,options:{A:'',B:'',C:'',D:''},answer:'',verified:false,include:true,page,image:'',pageImage:''};continue}
-  if(!q)continue;
-  const ans=line.match(/^(?:answer|ans\.?|correct answer|correct option|answer key)\s*[:.)\-]?\s*(?:option\s*)?\(?([A-D])\)?\b/i);
-  if(ans){q.answer=ans[1].toUpperCase();continue}
-  if(/^(?:solution|explanation|detailed solution|worked solution|solution:|explanation:|answer explanation)\b/i.test(line)){mode='solution';continue}
-  if(mode==='solution')continue;
-  if(/^(?:options?|choose the correct option)\s*:/i.test(line))line=line.replace(/^(?:options?|choose the correct option)\s*:/i,'');
-  if(splitOptions(line))continue;
-  if(mode==='options'){
-   // Continuation lines belong to the most recently opened option, otherwise to next empty option.
-   const target=pendingOption||['A','B','C','D'].find(k=>!q.options[k]);
-   if(target&&!/^(?:answer|ans\.?|solution|explanation)\b/i.test(line)){q.options[target]=clean((q.options[target]+' '+line));pendingOption=target;continue}
-  }
-  if(mode==='question')q.text=clean(q.text+' '+line);
- }
- flush();return out;
-}
-function scoreQuestion(q){let score=0;if(q.text&&q.text.length>12)score+=35;const n=Object.values(q.options).filter(Boolean).length;score+=n===4?45:n===3?35:n===2?22:0;if(q.number>0)score+=10;if(q.text.length<25)score-=10;return Math.max(0,Math.min(100,score))}
-async function loadPdf(file){
- const buf=await file.arrayBuffer();pdfDoc=await pdfjsLib.getDocument({data:buf}).promise;pages=[];pageLines=[];const texts=[];
- for(let p=1;p<=pdfDoc.numPages;p++){
-  const pg=await pdfDoc.getPage(p),vp=pg.getViewport({scale:1.7}),c=document.createElement('canvas'),ctx=c.getContext('2d');c.width=vp.width;c.height=vp.height;await pg.render({canvasContext:ctx,viewport:vp}).promise;pages.push(c);
-  const tc=await pg.getTextContent(),items=[];
-  for(const it of tc.items){if(!it.str?.trim())continue;const tr=pdfjsLib.Util.transform(vp.transform,it.transform);items.push({x:tr[4],y:tr[5],x2:tr[4]+(it.width||0)*vp.scale,text:it.str})}
-  // Cluster by baseline AND horizontal neighborhood so two-column pages do not merge left/right columns.
-  const rows=[];
-  for(const it of items){let row=rows.find(z=>Math.abs(z.y-it.y)<5&&Math.abs(z.x2-it.x)<90);if(!row){row={y:it.y,x1:it.x,x2:it.x2,parts:[it]};rows.push(row)}else{row.parts.push(it);row.x1=Math.min(row.x1,it.x);row.x2=Math.max(row.x2,it.x2)}}
-  rows.sort((a,b)=>b.y-a.y);for(const row of rows){row.parts.sort((a,b)=>a.x-b.x);row.text=clean(row.parts.map(x=>x.text).join(' '))}
-  pageLines.push(rows);texts.push(rows.map(x=>x.text).join('\n'));
- }
- return texts;
-}
-function cropFor(q){
- const ls=pageLines[q.page-1]||[],canvas=pages[q.page-1];if(!canvas)return'';
- let start=ls.findIndex(l=>new RegExp('^(?:question|ques\\.?|q\\.?)\\s*'+q.number+'\\b|^\\(?'+q.number+'\\)?[.)\\-:]','i').test(clean(l.text)));
- if(start<0){const n=norm(q.text).slice(0,24);start=ls.findIndex(l=>n.length>8&&norm(l.text).includes(n))}
- if(start<0)return canvas.toDataURL('image/jpeg',.86);
- let end=ls.length;for(let i=start+1;i<ls.length;i++){if(/^(?:question|ques\.?|q\.?\s*\d+|\(?\d+\)?[.)-])/.test(clean(ls[i].text))){end=i;break}}
- const arr=ls.slice(start,end),x1=Math.max(0,Math.floor(Math.min(...arr.map(l=>l.x1))-24)),x2=Math.min(canvas.width,Math.ceil(Math.max(...arr.map(l=>l.x2))+24)),y1=Math.max(0,Math.floor(arr[arr.length-1].y-28)),y2=Math.min(canvas.height,Math.ceil(arr[0].y+24));
- if(x2-x1<80||y2-y1<40)return canvas.toDataURL('image/jpeg',.86);
- const o=document.createElement('canvas');o.width=x2-x1;o.height=y2-y1;o.getContext('2d').drawImage(canvas,x1,y1,o.width,o.height,0,0,o.width,o.height);return o.toDataURL('image/jpeg',.9);
-}
-async function extract(force=false){
- const f=$('pdfFile').files[0];if(!f){status('Pehle PDF select karo.');return}if(!window.pdfjsLib){status('PDF.js load nahi hua. Internet check karo.');return}
- $('extractBtn').disabled=$('ocrBtn').disabled=true;
+$("authButton").onclick=async()=>{
+ if(!db){await start();if(!db)return;}
+ const email=$("email").value.trim(),password=$("password").value;
+ if(!email||!password){message("authMsg","Email और password भरें।","notice error");return;}
+ $("authButton").disabled=true;
  try{
-  status('PDF pages, text aur layout read ho rahe hain...');const texts=await loadPdf(f),byPage=texts.map((t,i)=>parseText(t,i+1));let found=byPage.flat(),answerMap=parseAnswerMap(texts.join('\n\n'));
-  const mode=$('ocr').value,ocrPages=[];
-  if(force||mode==='yes'){pages.forEach((_,i)=>ocrPages.push(i))}
-  else if(mode==='auto'){
-   byPage.forEach((qs,i)=>{const raw=texts[i]||'';const sparse=raw.replace(/\s/g,'').length<80;const weak=qs.length===0||(qs.some(q=>Object.values(q.options).filter(Boolean).length<3));const markers=(raw.match(/(?:^|\n)\s*(?:(?:question|ques\.?|q\.?)\s*\d{1,3}|\(?\d{1,3}\)?[.)])/gim)||[]).length;const incomplete=markers>qs.length+1;if(sparse||weak||incomplete)ocrPages.push(i)})
+  if(signupMode){
+   const fullName=$("fullName").value.trim();
+   if(!fullName){message("authMsg","अपना पूरा नाम लिखें।","notice error");return;}
+   const {data,error}=await db.auth.signUp({email,password,options:{data:{full_name:fullName}}});
+   if(error)throw error;
+   if(data.session) await enterApp(data.user); else message("authMsg","Account बन गया। Email confirmation माँगा गया हो तो inbox में जाकर confirm करें, फिर Login करें।","notice success");
+  }else{
+   const {data,error}=await db.auth.signInWithPassword({email,password});if(error)throw error;await enterApp(data.user);
   }
-  if(ocrPages.length){if(!window.Tesseract)throw Error('OCR library load nahi hui. Internet connection check karo.');
-   const lang=$('ocrLang')?.value||'eng';
-   for(let j=0;j<ocrPages.length;j++){const i=ocrPages[j];status(`OCR page ${i+1}/${pages.length} (${j+1}/${ocrPages.length})...`);const r=await Tesseract.recognize(pages[i].toDataURL('image/png'),lang,{logger:m=>{if(m.status==='recognizing text')status(`OCR page ${i+1}/${pages.length}: ${Math.round((m.progress||0)*100)}%`)}});const extra=parseText(r.data.text,i+1);if(extra.length)found.push(...extra)}
-  }
-  const seen=new Set();questions=found.filter(q=>{const k=norm(q.text).replace(/\b(question|ques|q)\b/g,'').slice(0,110);if(!k||seen.has(k))return false;seen.add(k);return true}).map(q=>({...q,answer:q.answer||answerMap[q.number]||'',image:cropFor(q),verified:false,include:true}));
-  if(!questions.length){status('MCQ detect nahi hue. Yeh PDF notes/handwritten pages bhi ho sakti hai. Original pages safe hain, lekin MCQ banane ke liye manual review zaroori hoga.');return}
-  previewIndex=0;$('previewPanel').hidden=false;renderPreview();const low=questions.filter(q=>q.confidence<65).length,missing=questions.filter(q=>Object.values(q.options).filter(Boolean).length<4).length;
-  status(`${questions.length} possible questions detect hue. OCR pages: ${ocrPages.length}. Low-confidence: ${low}; incomplete options: ${missing}. Har question ko preview mein verify karein—auto-detected text ko final na maanein.`);setStep(2);
- }catch(e){console.error(e);status('PDF process error: '+e.message)}finally{$('extractBtn').disabled=$('ocrBtn').disabled=false}
+ }catch(e){message("authMsg",e.message,"notice error");}
+ finally{$("authButton").disabled=false;}
+};
+function showAuth(){$("appView").classList.add("hidden");$("authView").classList.remove("hidden");}
+async function enterApp(user){
+ currentUser=user;
+ const {data,error}=await db.from("profiles").select("full_name,role").eq("id",user.id).maybeSingle();
+ if(error){showAuth();message("authMsg","Profile load नहीं हुआ: "+error.message,"notice error");return;}
+ profile=data||{full_name:"",role:"student"};
+ $("authView").classList.add("hidden");$("appView").classList.remove("hidden");
+ $("hello").textContent="नमस्ते, "+(profile.full_name||user.email||"Student");
+ $("userRole").textContent=profile.role==="admin"?"ADMIN":"STUDENT";
+ $("adminPanel").classList.toggle("hidden",profile.role!=="admin");
+ await loadClasses();
 }
-function renderPreview(){let q=questions[previewIndex];$('previewCount').textContent=questions.length+' Questions';$('previewStats').innerHTML=`<div class="stat">Detected<b>${questions.length}</b></div><div class="stat">Verified<b>${questions.filter(x=>x.verified).length}</b></div><div class="stat">With answer key<b>${questions.filter(x=>x.answer).length}</b></div>`;$('previewNumber').textContent=`Question ${previewIndex+1} of ${questions.length} · PDF page ${q.page}`;$('answerTag').textContent=(q.answer?'Answer found':'Answer not found')+' · '+(q.confidence||0)+'% confidence';$('answerTag').className='tag '+((q.confidence||0)<65?'bad':'');if(q.image){$('previewImage').src=q.image;$('previewImage').classList.remove('hidden');$('textFallback').classList.add('hidden')}else{$('previewImage').classList.add('hidden');$('textFallback').classList.remove('hidden');$('textFallback').textContent=q.text||'Question crop not available'}$('previewOptions').innerHTML=['A','B','C','D'].filter(k=>q.options[k]).map(k=>`<div class="option"><b>${k}.</b> ${esc(q.options[k])}</div>`).join('')||'<p class="muted">Options detect nahi hue.</p>';$('editText').value=q.text;$('editOptions').innerHTML=['A','B','C','D'].map(k=>`<div class="field"><label>Option ${k}</label><input data-opt="${k}" value="${esc(q.options[k])}"></div>`).join('');$('editOptions').querySelectorAll('[data-opt]').forEach(x=>x.oninput=()=>{q.options[x.dataset.opt]=x.value;renderOptionPreview(q)});$('editAnswer').value=q.answer||'';$('editVerified').value=String(!!q.verified);$('editInclude').checked=q.include!==false;$('prevPreview').disabled=previewIndex===0;$('nextPreview').disabled=previewIndex===questions.length-1}
-function renderOptionPreview(q){$('previewOptions').innerHTML=['A','B','C','D'].filter(k=>q.options[k]).map(k=>`<div class="option"><b>${k}.</b> ${esc(q.options[k])}</div>`).join('')}
-$('editText').oninput=()=>questions[previewIndex].text=$('editText').value;$('editAnswer').onchange=()=>questions[previewIndex].answer=$('editAnswer').value;$('editVerified').onchange=()=>questions[previewIndex].verified=$('editVerified').value==='true';$('editInclude').onchange=()=>questions[previewIndex].include=$('editInclude').checked;$('prevPreview').onclick=()=>{if(previewIndex>0){previewIndex--;renderPreview()}};$('nextPreview').onclick=()=>{if(previewIndex<questions.length-1){previewIndex++;renderPreview()}};
-async function saveBank(){let ready=questions.filter(q=>q.include!==false&&q.verified&&q.text&&Object.values(q.options).filter(Boolean).length>=2);if(!ready.length){alert('Pehle kam se kam ek question verify karo.');return}let name=prompt('Question Bank ka naam likho:',$('pdfFile').files[0]?.name?.replace(/\.pdf$/i,'')||'My Question Bank');if(!name)return;let rec={id:activeBankId||'bank_'+Date.now(),name,createdAt:new Date().toLocaleString(),questions:ready.map(q=>({...q,options:{...q.options}})),difficulty:$('difficulty').value};try{await dbPut(rec);activeBankId=rec.id;$('libraryStatus').textContent=name+' save ho gaya.';await renderBanks()}catch(e){$('libraryStatus').textContent='Save error: '+e.message}}
-async function renderBanks(){try{let banks=await dbAll();$('bankList').innerHTML='';if(!banks.length){$('bankList').textContent='Abhi koi Question Bank save nahi hai.';return}banks.sort((a,b)=>b.id.localeCompare(a.id));banks.forEach(b=>{let d=document.createElement('div');d.className='bank-card';d.innerHTML=`<div><b>${esc(b.name)}</b><div class="muted">${b.questions.length} questions · ${esc(b.createdAt||'')}</div></div><div class="actions" style="margin:0"><button class="btn" data-start="${esc(b.id)}">Start Test</button><button class="btn secondary" data-edit="${esc(b.id)}">Review / Edit</button><button class="btn danger" data-del="${esc(b.id)}">Delete</button></div>`;$('bankList').appendChild(d)});$('bankList').querySelectorAll('[data-start]').forEach(x=>x.onclick=()=>startTest(x.dataset.start));$('bankList').querySelectorAll('[data-edit]').forEach(x=>x.onclick=()=>editBank(x.dataset.edit));$('bankList').querySelectorAll('[data-del]').forEach(x=>x.onclick=async()=>{if(confirm('Delete this bank?')){await dbDel(x.dataset.del);renderBanks()}})}catch(e){$('libraryStatus').textContent='Library error: '+e.message}}
-async function editBank(id){let b=await dbGet(id);if(!b)return;activeBankId=id;questions=b.questions.map(q=>({...q,verified:true,include:true}));previewIndex=0;renderPreview();setStep(2)}
-async function startTest(id){let b=await dbGet(id);if(!b?.questions?.length)return;activeBankId=id;let n=$('count').value;quiz=n==='all'?b.questions.slice():b.questions.slice(0,+n);beginQuiz()}
-function startTestFromPreview(){let selected=questions.filter(q=>q.include!==false&&q.text&&Object.values(q.options).filter(Boolean).length>=2);if(!selected.length){alert('Test ke liye koi valid question nahi mila.');return}let n=$('count').value;quiz=n==='all'?selected.slice():selected.slice(0,+n);activeBankId=null;beginQuiz()}
-function beginQuiz(){if(!quiz.length){alert('Test ke liye questions nahi mile.');return}answers={};bookmarks=new Set();current=0;questionTimes=Array(quiz.length).fill(0);questionStartedAt=Date.now();seconds=Math.max(1,Math.min(600,+$('duration').value||60))*60;$('totalN').textContent=quiz.length;$('quizPanel').classList.remove('hidden');$('resultPanel').classList.add('hidden');renderQuiz();startTimer();setStep(3)}
-$('startPreviewTestBtn').onclick=startTestFromPreview;
-$('extractBtn').onclick=()=>extract(false);$('ocrBtn').onclick=()=>extract(true);$('saveBankBtn').onclick=saveBank;$('exportBtn').onclick=()=>{let blob=new Blob([JSON.stringify(questions,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='raushanpdfquiz-question-bank.json';a.click();URL.revokeObjectURL(a.href)};
-function startTimer(){clearInterval(timerId);tick();timerId=setInterval(()=>{seconds--;tick();if(seconds<=0)submitQuiz()},1000)}function tick(){$('timer').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0')}
-function renderQuiz(){let q=quiz[current];$('quizQuestion').innerHTML=`<div class="preview-card"><b>Question ${current+1} of ${quiz.length}</b>${q.image?`<div class="crop-wrap" style="margin-top:10px"><img src="${q.image}" alt="Question"></div>`:`<p>${esc(q.text)}</p>`}<div class="options">${['A','B','C','D'].filter(k=>q.options[k]).map(k=>`<button class="quiz-option ${answers[current]===k?'selected':''}" data-a="${k}"><b>${k}.</b> ${esc(q.options[k])}</button>`).join('')}</div></div>`;$('quizQuestion').querySelectorAll('[data-a]').forEach(x=>x.onclick=()=>{answers[current]=x.dataset.a;renderQuiz()});let attempted=Object.keys(answers).length;$('attemptN').textContent=attempted;$('remainN').textContent=quiz.length-attempted;$('progress').style.width=(attempted/quiz.length*100)+'%';$('navigation').innerHTML=quiz.map((_,i)=>`<button class="btn ${i===current?'':'secondary'} navbtn" data-go="${i}">${i+1}${answers[i]?' ✓':''}</button>`).join('');$('navigation').querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>{recordQuestionTime();current=+x.dataset.go;renderQuiz()});$('prevBtn').disabled=current===0;$('nextBtn').textContent=current===quiz.length-1?'Finish':'Save & Next'}
-$('prevBtn').onclick=()=>{if(current>0){recordQuestionTime();current--;renderQuiz()}};$('skipBtn').onclick=()=>{if(current<quiz.length-1){recordQuestionTime();current++;renderQuiz()}};$('nextBtn').onclick=()=>{if(current<quiz.length-1){recordQuestionTime();current++;renderQuiz()}else submitQuiz()};$('submitBtn').onclick=()=>{if(confirm('Quiz submit karna hai?'))submitQuiz()};
-function submitQuiz(){recordQuestionTime();clearInterval(timerId);let correct=0,wrong=0,attempt=0,known=0;quiz.forEach((q,i)=>{if(q.answer)known++;if(answers[i]){attempt++;if(q.answer&&answers[i]===q.answer)correct++;else if(q.answer)wrong++}});let unanswered=quiz.length-attempt,acc=attempt?Math.round(correct/attempt*100):0;$('resultStats').innerHTML=`<div class="stat">Correct<b>${correct}</b></div><div class="stat">Wrong<b>${wrong}</b></div><div class="stat">Unattempted<b>${unanswered}</b></div><div class="stat">Accuracy<b>${known?acc+'%':'N/A'}</b></div><div class="stat">Answer key<b>${known}/${quiz.length}</b></div>`;$('answerReview').innerHTML=quiz.map((q,i)=>`<div class="reviewrow"><b>Q${i+1}. ${esc(q.text)}</b><p class="muted">Your answer: ${answers[i]||'Not attempted'} · Correct answer: ${q.answer||'Not available'} · Time spent: ${fmtTime(questionTimes[i])}</p></div>`).join('');$('resultPanel').classList.remove('hidden');$('resultPanel').scrollIntoView({behavior:'smooth'});let h=JSON.parse(localStorage.getItem('rpq_history')||'[]');h.unshift({date:new Date().toLocaleString(),total:quiz.length,correct,wrong,unanswered,accuracy:acc,known});localStorage.setItem('rpq_history',JSON.stringify(h.slice(0,30)));renderHistory()}
-$('newQuizBtn').onclick=()=>{$('quizPanel').classList.add('hidden');$('resultPanel').classList.add('hidden');$('libraryPanel').scrollIntoView({behavior:'smooth'})};function renderHistory(){let h=JSON.parse(localStorage.getItem('rpq_history')||'[]');$('historyList').innerHTML=h.length?h.map(x=>`<div class="reviewrow"><b>${esc(x.date)}</b><div class="muted">${x.correct}/${x.total} correct · ${x.known?x.accuracy+'% accuracy':'Answer key unavailable'} · ${x.wrong} wrong · ${x.unanswered} unattempted</div></div>`).join(''):'Abhi koi test history nahi hai.'}renderHistory();renderBanks();setStep(1);
-</script></body></html>
+$("logoutBtn").onclick=async()=>{if(db)await db.auth.signOut();};
+async function loadClasses(){
+ $("classSection").classList.remove("hidden");$("librarySection").classList.add("hidden");
+ const {data,error}=await db.from("classes").select("id,class_number").order("class_number");
+ if(error){$("classGrid").innerHTML='<div class="notice error">'+esc(error.message)+'</div>';return;}
+ $("classGrid").innerHTML=(data||[]).map((c,i)=>`<button class="tile c${i%5+1}" data-class="${c.id}"><span>✦</span><b>Class ${c.class_number}</b><small>Explore study material&nbsp; ↗</small></button>`).join("");
+ document.querySelectorAll("[data-class]").forEach(b=>b.onclick=()=>openClass(Number(b.dataset.class)));
+}
+async function openClass(id){
+ const {data,error}=await db.from("classes").select("id,class_number").eq("id",id).single();if(error)return;
+ selectedClass=data;selectedSubject=null;selectedBook=null;selectedFolder=null;currentLevel="subjects";
+ $("classSection").classList.add("hidden");$("librarySection").classList.remove("hidden");await renderLevel();
+}
+$("backClasses").onclick=()=>loadClasses();
+function setCrumbs(){
+ let a=[`<button data-crumb="classes">Classes</button>`];
+ if(selectedClass)a.push(`<button data-crumb="subjects">Class ${selectedClass.class_number}</button>`);
+ if(selectedSubject)a.push(`<button data-crumb="books">${esc(selectedSubject.name)}</button>`);
+ if(selectedBook)a.push(`<button data-crumb="folders">${esc(selectedBook.title)}</button>`);
+ document.querySelectorAll("[data-crumb]").forEach(x=>x.remove());
+ $("crumbs").innerHTML=a.join("");
+ $("crumbs").querySelectorAll("button").forEach(b=>b.onclick=async()=>{const v=b.dataset.crumb;if(v==="classes"){loadClasses();return;}if(v==="subjects"){selectedSubject=null;selectedBook=null;selectedFolder=null;currentLevel="subjects";}if(v==="books"){selectedBook=null;selectedFolder=null;currentLevel="books";}if(v==="folders"){selectedFolder=null;currentLevel="folders";}await renderLevel();});
+}
+async function renderLevel(){
+ setCrumbs();const box=$("contentList");box.innerHTML='<div class="empty">Loading...</div>';
+ $("libraryHeading").textContent=currentLevel==="subjects"?"Subjects":currentLevel==="books"?"Books":currentLevel==="folders"?"Folders & Chapters":"Study Materials";
+ let rows=[],error=null,table="",icon="",label="",idkey="";
+ if(currentLevel==="subjects"){table="subjects";icon="📚";label="name";idkey="id";({data:rows,error}=await db.from(table).select("*").eq("class_id",selectedClass.id).order("name"));}
+ else if(currentLevel==="books"){table="books";icon="📖";label="title";idkey="id";({data:rows,error}=await db.from(table).select("*").eq("subject_id",selectedSubject.id).order("title"));}
+ else if(currentLevel==="folders"){table="folders";icon="📁";label="name";idkey="id";let q=db.from(table).select("*").eq("book_id",selectedBook.id);q=selectedFolder?q.eq("parent_id",selectedFolder.id):q.is("parent_id",null);({data:rows,error}=await q.order("name"));}
+ else {table="materials";icon="📄";label="title";idkey="id";({data:rows,error}=await db.from(table).select("*").eq("folder_id",selectedFolder.id).order("created_at",{ascending:false}));}
+ if(error){box.innerHTML='<div class="notice error">'+esc(error.message)+'</div>';return;}
+ if(!rows||!rows.length){box.innerHTML='<div class="empty">अभी यहाँ कोई सामग्री नहीं है। Admin जल्द ही सामग्री जोड़ सकता है।</div>';return;}
+ box.innerHTML=rows.map(r=>`<div class="item"><div class="item-icon">${icon}</div><div class="item-main"><b>${esc(r[label])}</b><small>${currentLevel==="materials"?(r.file_type||"file").toUpperCase():"Open to explore"}</small></div><button data-open="${r[idkey]}">${currentLevel==="materials"?"Open":"Open →"}</button></div>`).join("");
+ box.querySelectorAll("[data-open]").forEach((b,i)=>b.onclick=async()=>{
+  const r=rows[i];
+  if(currentLevel==="subjects"){selectedSubject=r;currentLevel="books";}
+  else if(currentLevel==="books"){selectedBook=r;selectedFolder=null;currentLevel="folders";}
+  else if(currentLevel==="folders"){selectedFolder=r;currentLevel="materials";}
+  else {await openMaterial(r);return;}
+  await renderLevel();
+ });
+}
+async function openMaterial(m){
+ const {data,error}=await db.storage.from("study-materials").createSignedUrl(m.file_path,300);
+ if(error){message("adminMsg","File link नहीं बना: "+error.message,"notice error");return;}
+ window.open(data.signedUrl,"_blank","noopener");
+}
+function adminReady(){if(profile?.role!=="admin"){message("adminMsg","यह सुविधा केवल Admin के लिए है।","notice error");return false;}return true;}
+$("addSubject").onclick=async()=>{
+ if(!adminReady()||!selectedClass)return message("adminMsg","पहले Class चुनें।","notice error");
+ const name=$("newSubject").value.trim();if(!name)return;
+ const {error}=await db.from("subjects").insert({class_id:selectedClass.id,name});
+ if(error)message("adminMsg",error.message,"notice error");else{$("newSubject").value="";message("adminMsg","Subject जोड़ दिया गया।","notice success");if(currentLevel==="subjects")await renderLevel();}
+};
+$("addBook").onclick=async()=>{
+ if(!adminReady()||!selectedSubject)return message("adminMsg","पहले Class और Subject चुनें।","notice error");
+ const title=$("newBook").value.trim();if(!title)return;
+ const {error}=await db.from("books").insert({subject_id:selectedSubject.id,title});
+ if(error)message("adminMsg",error.message,"notice error");else{$("newBook").value="";message("adminMsg","Book जोड़ दी गई।","notice success");if(currentLevel==="books")await renderLevel();}
+};
+$("addFolder").onclick=async()=>{
+ if(!adminReady()||!selectedBook)return message("adminMsg","पहले Class, Subject और Book चुनें।","notice error");
+ const name=$("newFolder").value.trim();if(!name)return;
+ const payload={book_id:selectedBook.id,parent_id:selectedFolder?.id||null,name};
+ const {error}=await db.from("folders").insert(payload);
+ if(error)message("adminMsg",error.message,"notice error");else{$("newFolder").value="";message("adminMsg","Folder जोड़ दिया गया।","notice success");if(currentLevel==="folders")await renderLevel();}
+};
+$("uploadFile").onclick=async()=>{
+ if(!adminReady()||!selectedFolder)return message("adminMsg","PDF upload करने से पहले कोई Folder खोलें।","notice error");
+ const file=$("studyFile").files[0],title=$("fileTitle").value.trim()||file?.name;
+ if(!file)return message("adminMsg","पहले PDF या Image चुनें।","notice error");
+ const isPdf=file.type==="application/pdf",isImage=file.type.startsWith("image/");
+ if(!isPdf&&!isImage)return message("adminMsg","केवल PDF या Image upload करें।","notice error");
+ if(file.size>50*1024*1024)return message("adminMsg","यह file 50 MB से बड़ी है। Free plan की सीमा और project limits जाँचें।","notice error");
+ const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+ const path=`${selectedBook.id}/${selectedFolder.id}/${Date.now()}_${safeName}`;
+ $("uploadFile").disabled=true;message("adminMsg","Upload हो रहा है...");
+ try{
+  const {error:upErr}=await db.storage.from("study-materials").upload(path,file,{upsert:false,contentType:file.type});
+  if(upErr)throw upErr;
+  const {error:dbErr}=await db.from("materials").insert({folder_id:selectedFolder.id,title,file_path:path,file_type:isPdf?"pdf":"image",created_by:currentUser.id});
+  if(dbErr){await db.storage.from("study-materials").remove([path]);throw dbErr;}
+  $("studyFile").value="";$("fileTitle").value="";message("adminMsg","Material सफलतापूर्वक upload हो गया।","notice success");
+  if(currentLevel==="materials")await renderLevel();
+ }catch(e){message("adminMsg",e.message,"notice error");}
+ finally{$("uploadFile").disabled=false;}
+};
+start();
+</script>
+</body>
+</html>
